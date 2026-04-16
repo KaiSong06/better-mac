@@ -92,7 +92,7 @@ targets:
         # commit — public only.
         SUPublicEDKey: "vVnUWAkJByng74JEK9CJI+CeAoMfG3eOET4fkxucXHU="
         SUEnableAutomaticChecks: YES
-        SUScheduledCheckInterval: 86400
+        SUScheduledCheckInterval: 3600
     entitlements:
       path: better-mac/better-mac.entitlements
       properties:
