@@ -3,8 +3,13 @@ import SwiftUI
 /// Visual states for the island content. The panel's frame is driven by the
 /// controller; `IslandView` only renders content that matches the current
 /// state.
+///
+/// - `idle`: no active media — plain black notch.
+/// - `playing`: a track is loaded — black pill with artwork + waveform.
+/// - `expanded`: cursor is hovering — full media UI.
 enum IslandState: Equatable {
-    case collapsed
+    case idle
+    case playing
     case expanded
 }
 
@@ -33,9 +38,22 @@ struct IslandView: View {
     @ViewBuilder
     private var background: some View {
         switch state {
-        case .collapsed:
+        case .idle:
             // Rounded only on the bottom so the top aligns with the menu bar
             // and extends the notch shape downward.
+            UnevenRoundedRectangle(
+                cornerRadii: .init(
+                    topLeading: 0,
+                    bottomLeading: notchCorner,
+                    bottomTrailing: notchCorner,
+                    topTrailing: 0
+                ),
+                style: .continuous
+            )
+            .fill(Color.black)
+        case .playing:
+            // Placeholder in Unit 1 — same shape as .idle, filled black.
+            // Unit 4 replaces this with a wider compact layout.
             UnevenRoundedRectangle(
                 cornerRadii: .init(
                     topLeading: 0,

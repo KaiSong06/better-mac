@@ -25,7 +25,7 @@ final class IslandWindowController: NSObject {
         self.store = store
         self.appState = appState
 
-        self.container = ObservableContainer(state: .collapsed)
+        self.container = ObservableContainer(state: .idle)
         self.hostingView = NSHostingView(rootView: IslandContainer(container: container, store: store))
         self.hostingView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -64,7 +64,11 @@ final class IslandWindowController: NSObject {
         let weakContainer = container
         self.hotZone = IslandHotZone { [weak weakContainer] newState in
             Task { @MainActor in
-                weakContainer?.state = (newState == .expanded) ? .expanded : .collapsed
+                // Unit 3 will replace this direct mapping with
+                // IslandStateResolver.resolve(hovering:hasTrack:) so track
+                // state participates in the decision. For now a hover-out
+                // always parks us in .idle.
+                weakContainer?.state = (newState == .expanded) ? .expanded : .idle
             }
         }
 
@@ -100,13 +104,27 @@ final class IslandWindowController: NSObject {
     }
 
     func reposition() {
-        let collapsed = collapsedRect()
-        let frame = container.state == .expanded ? expandedRect(from: collapsed) : collapsed
-        panel.setFrame(frame, display: true, animate: false)
+        panel.setFrame(frame(for: container.state), display: true, animate: false)
         hotZone.refreshTrackingArea()
     }
 
     // MARK: - Frame math
+
+    /// Resolve the target panel frame for a given island state. All three
+    /// states center on the main screen's notch.
+    private func frame(for state: IslandState) -> CGRect {
+        let collapsed = collapsedRect()
+        switch state {
+        case .idle:
+            return collapsed
+        case .playing:
+            // Placeholder geometry in Unit 1 — identical to .idle. Unit 3
+            // replaces this with the wider playing pill.
+            return collapsed
+        case .expanded:
+            return expandedRect(from: collapsed)
+        }
+    }
 
     private func collapsedRect() -> CGRect {
         let screen = NSScreen.main ?? NSScreen.screens.first!
@@ -137,8 +155,7 @@ final class IslandWindowController: NSObject {
     }
 
     private func animateFrame(for state: IslandState) {
-        let collapsed = collapsedRect()
-        let target = state == .expanded ? expandedRect(from: collapsed) : collapsed
+        let target = frame(for: state)
 
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.24
