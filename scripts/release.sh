@@ -120,11 +120,13 @@ ok "xcodeproj regenerated"
 
 log "Resolving Sparkle package"
 xcodebuild -project "$PROJECT_NAME.xcodeproj" -scheme "$SCHEME" -resolvePackageDependencies > /dev/null
+# OBJROOT looks like .../DerivedData/<project-hash>/Build/Intermediates.noindex
+# Trim the trailing /Build/... to get the per-project DerivedData root, which
+# contains SourcePackages/ as a sibling of Build/.
 DERIVED="$(xcodebuild -project "$PROJECT_NAME.xcodeproj" -scheme "$SCHEME" -showBuildSettings 2>/dev/null \
   | awk -F'=' '/ OBJROOT = / {gsub(/ /,"",$2); print $2}' \
   | sed 's|/Build/Intermediates.noindex||' )"
-SPARKLE_BIN_DIR="$DERIVED/../SourcePackages/artifacts/sparkle/Sparkle/bin"
-SPARKLE_BIN_DIR="$(cd "$SPARKLE_BIN_DIR" && pwd)"
+SPARKLE_BIN_DIR="$DERIVED/SourcePackages/artifacts/sparkle/Sparkle/bin"
 [[ -x "$SPARKLE_BIN_DIR/sign_update" ]] || die "sign_update not found at $SPARKLE_BIN_DIR/sign_update"
 ok "Sparkle tools: $SPARKLE_BIN_DIR"
 

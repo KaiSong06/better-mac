@@ -9,7 +9,9 @@ final class IslandWindowController: NSObject {
     // Tuneable geometry
     private let expandedSize = CGSize(width: 420, height: 140)
     private let expandedTopPadding: CGFloat = 4  // visible distance below the menu bar
-    private let playingSize = CGSize(width: 340, height: 36)
+    // Playing-state width only; the height matches the idle notch so the
+    // pill reads as a horizontally-extended version of the same shape.
+    private let playingWidth: CGFloat = 260
 
     private let panel: IslandPanel
     private let hostingView: NSHostingView<IslandContainer>
@@ -119,7 +121,11 @@ final class IslandWindowController: NSObject {
             return collapsed
         case .playing:
             let screen = NSScreen.main ?? NSScreen.screens.first!
-            return Self.playingRect(in: screen.frame, size: playingSize)
+            // Use the notch's own height for the pill so the widened shape
+            // is a flush continuation of the hardware notch — no vertical
+            // seam when the island transitions between idle and playing.
+            let size = CGSize(width: playingWidth, height: collapsed.height)
+            return Self.playingRect(in: screen.frame, size: size)
         case .expanded:
             return expandedRect(from: collapsed)
         }
@@ -200,10 +206,14 @@ final class IslandWindowController: NSObject {
         let target = frame(for: state)
 
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.24
-            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            // Tight duration + a snappy custom cubic (fast lead-in, smooth
+            // settle) so the expand feels immediate instead of easing slowly
+            // out from rest. `display: false` skips the synchronous redraw
+            // each animation tick — the window compositor schedules its own.
+            ctx.duration = 0.18
+            ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.2, 0.9, 0.25, 1.0)
             ctx.allowsImplicitAnimation = true
-            panel.animator().setFrame(target, display: true)
+            panel.animator().setFrame(target, display: false)
         } completionHandler: { [weak self] in
             Task { @MainActor in
                 self?.hotZone.refreshTrackingArea()

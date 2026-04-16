@@ -32,7 +32,9 @@ final class VolumeHUDWindowController {
         panel.hasShadow = false
         panel.isMovable = false
         panel.isMovableByWindowBackground = false
-        panel.level = .screenSaver
+        // .floating sits above normal windows but doesn't carry the implicit
+        // system shadow that .screenSaver / popUpMenu levels do on Tahoe.
+        panel.level = .floating
         panel.collectionBehavior = [
             .canJoinAllSpaces,
             .fullScreenAuxiliary,
@@ -44,6 +46,11 @@ final class VolumeHUDWindowController {
 
         let hosting = NSHostingView(rootView: ContentWrapper(model: model, appState: appState))
         hosting.translatesAutoresizingMaskIntoConstraints = false
+        // Belt-and-suspenders: explicitly clear the hosting view's layer so
+        // the capsule isn't framed by an implicit grey rectangle on macOS
+        // versions that give NSHostingView a default backgroundColor.
+        hosting.wantsLayer = true
+        hosting.layer?.backgroundColor = NSColor.clear.cgColor
         panel.contentView = hosting
         if let content = panel.contentView {
             NSLayoutConstraint.activate([
@@ -65,6 +72,10 @@ final class VolumeHUDWindowController {
 
         reposition()
         panel.orderFrontRegardless()
+        // Re-assert no-shadow after order-front; macOS sometimes restores
+        // the default panel shadow on activation.
+        panel.hasShadow = false
+        panel.invalidateShadow()
 
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.12

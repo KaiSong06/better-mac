@@ -16,8 +16,8 @@ settings:
   base:
     MACOSX_DEPLOYMENT_TARGET: "14.0"
     SWIFT_VERSION: "5.10"
-    MARKETING_VERSION: "0.1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.1.1"
+    CURRENT_PROJECT_VERSION: "5"
     PRODUCT_BUNDLE_IDENTIFIER: com.KaiSong06.better-mac
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Manual
@@ -29,7 +29,19 @@ settings:
     ENABLE_PREVIEWS: YES
   configs:
     Debug:
-      CODE_SIGN_IDENTITY: "-"
+      # Sign Debug builds with the Apple Development cert so the binary's
+      # designated requirement is stable across rebuilds. Without this, TCC
+      # invalidates the Accessibility grant every build (the cdhash changes)
+      # and the Volume HUD silently fails to install its CGEventTap.
+      #
+      # The SHA hash below is the cert's fingerprint (from
+      # `security find-identity -v`). Using the hash dodges Xcode's team-ID
+      # matching, which gets confused by certs whose OU and CN team IDs
+      # differ.
+      CODE_SIGN_IDENTITY: "BD481265772546378FDE284EDFF523FCE524D765"
+      CODE_SIGN_STYLE: Manual
+      DEVELOPMENT_TEAM: "K4DKFK28TA"
+      PROVISIONING_PROFILE_SPECIFIER: ""
       ENABLE_HARDENED_RUNTIME: NO
     Release:
       # The release.sh script overrides these via xcodebuild command-line flags

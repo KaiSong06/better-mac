@@ -8,6 +8,7 @@ struct SpotifyTrack: Equatable {
     let duration: TimeInterval
     let elapsed: TimeInterval
     let artworkURL: URL?
+    let isPlaying: Bool
     var artwork: NSImage?
 
     static func == (lhs: SpotifyTrack, rhs: SpotifyTrack) -> Bool {
@@ -16,7 +17,8 @@ struct SpotifyTrack: Equatable {
         lhs.album == rhs.album &&
         lhs.duration == rhs.duration &&
         lhs.elapsed == rhs.elapsed &&
-        lhs.artworkURL == rhs.artworkURL
+        lhs.artworkURL == rhs.artworkURL &&
+        lhs.isPlaying == rhs.isPlaying
     }
 }
 
@@ -51,17 +53,18 @@ final class SpotifyAppleScriptClient {
 
     private let script = """
     tell application "Spotify"
-        if player state is playing then
-            set n to name of current track
-            set a to artist of current track
-            set al to album of current track
-            set d to duration of current track
-            set p to player position
-            set au to artwork url of current track
-            return n & "\t" & a & "\t" & al & "\t" & d & "\t" & p & "\t" & au
-        else
+        if player state is stopped then
             return ""
         end if
+        set playState to "paused"
+        if player state is playing then set playState to "playing"
+        set n to name of current track
+        set a to artist of current track
+        set al to album of current track
+        set d to duration of current track
+        set p to player position
+        set au to artwork url of current track
+        return n & "\t" & a & "\t" & al & "\t" & d & "\t" & p & "\t" & au & "\t" & playState
     end tell
     """
 
@@ -95,7 +98,9 @@ final class SpotifyAppleScriptClient {
     // MARK: - Parsing (exposed internal for unit tests)
 
     /// Parse the tab-separated string produced by `script`.
-    /// Format: name\tartist\talbum\tduration_ms\tposition_seconds\tartwork_url
+    /// Format: name\tartist\talbum\tduration_ms\tposition_seconds\tartwork_url\tstate
+    /// Where `state` is "playing" or "paused". Empty string means stopped.
+    /// The state field is required; older outputs without it default to playing.
     nonisolated static func parse(output: String) -> SpotifyTrack? {
         let trimmed = output.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return nil }
@@ -109,6 +114,7 @@ final class SpotifyAppleScriptClient {
         let duration = durationMS / 1000.0
         let elapsed = Double(parts[4]) ?? 0
         let url = URL(string: parts[5])
+        let isPlaying = parts.count >= 7 ? (parts[6] == "playing") : true
         return SpotifyTrack(
             name: name,
             artist: artist,
@@ -116,6 +122,7 @@ final class SpotifyAppleScriptClient {
             duration: max(0, duration),
             elapsed: max(0, min(elapsed, duration)),
             artworkURL: url,
+            isPlaying: isPlaying,
             artwork: nil
         )
     }

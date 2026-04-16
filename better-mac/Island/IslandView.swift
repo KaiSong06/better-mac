@@ -18,9 +18,11 @@ struct IslandView: View {
     @ObservedObject var store: NowPlayingStore
 
     // Corner radius at the bottom matches the physical notch's rounded edge
-    // for a seamless extension illusion on notched MacBooks.
+    // for a seamless extension illusion on notched MacBooks. The playing
+    // state shares the notch radius so the widened pill reads as a horizontal
+    // extension of the hardware notch, not a distinct capsule.
     private let notchCorner: CGFloat = 10
-    private let playingCorner: CGFloat = 18
+    private let playingCorner: CGFloat = 10
     private let expandedCorner: CGFloat = 22
 
     var body: some View {
@@ -38,10 +40,14 @@ struct IslandView: View {
                 ExpandedIslandContent(store: store)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
-                    .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .top)))
+                    .transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.22), value: state)
+        // Match the window controller's frame animation so the content
+        // crossfade lands in lock-step with the panel resize. Plain opacity
+        // only (no scale) keeps the GPU path simple — the scaling transition
+        // was the main source of the perceived lag on expand.
+        .animation(.easeOut(duration: 0.18), value: state)
     }
 
     @ViewBuilder
@@ -145,13 +151,23 @@ private struct PlayingCollapsedContent: View {
     @ObservedObject var store: NowPlayingStore
 
     var body: some View {
-        HStack(spacing: 10) {
-            ArtworkView(image: store.artworkImage)
-                .frame(width: 28, height: 28)
+        // Size content off the container's actual height (the pill is now
+        // the same height as the notch, which varies by Mac model). The
+        // thumbnail fills the vertical slot minus small margins; the
+        // volumizer sits to the right.
+        GeometryReader { proxy in
+            let slot = proxy.size.height
+            let thumb = max(0, slot - 6)
+            HStack(spacing: 8) {
+                ArtworkView(image: store.artworkImage)
+                    .frame(width: thumb, height: thumb)
 
-            WaveformView(isAnimating: store.isPlaying)
-                .frame(maxWidth: .infinity)
-                .padding(.trailing, 4)
+                Spacer(minLength: 0)
+
+                VolumizerView(isAnimating: store.isPlaying)
+                    .frame(width: thumb, height: max(0, thumb - 8))
+                    .padding(.trailing, 2)
+            }
         }
     }
 }

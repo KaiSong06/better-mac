@@ -1,7 +1,11 @@
 import SwiftUI
 
-/// iPhone-style vertical volume pill showing the active output device, its
-/// icon, and a bottom-up filling bar.
+/// iPhone-style two-tone volume capsule with a device icon at the bottom.
+///
+/// The pill (track + fill) is drawn in a single `Canvas` so there's no
+/// per-layer compositing — that's what was producing the soft halo around
+/// the bottom curve. The icon is overlaid as a normal SwiftUI `Image`, which
+/// is fine because the Canvas underneath is now a solid opaque shape.
 struct VolumeHUDView: View {
     let volume: Float          // 0.0 ... 1.0
     let muted: Bool
@@ -9,81 +13,97 @@ struct VolumeHUDView: View {
     let deviceName: String
     let showPercentage: Bool
 
+    private var clampedVolume: CGFloat {
+        CGFloat(max(0, min(1, volume)))
+    }
+
+    private var fillFraction: CGFloat {
+        muted ? 0 : clampedVolume
+    }
+
     var body: some View {
-        ZStack {
-            // Glass-like pill background. We stick with ultraThinMaterial on
-            // dark for an iOS-flavored look without going pure black.
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 26, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
-                )
-                .shadow(color: .black.opacity(0.25), radius: 20, x: 0, y: 4)
-
-            VStack(spacing: 12) {
-                Image(systemName: iconName)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.primary)
-                    .frame(height: 22)
-
-                Text(deviceName)
-                    .font(.system(size: 10, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .padding(.horizontal, 4)
-
-                verticalBar
-
-                if showPercentage {
-                    Text("\(Int((volume * 100).rounded()))")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                }
-            }
-            .padding(.vertical, 16)
-            .padding(.horizontal, 10)
-        }
-    }
-
-    private var verticalBar: some View {
         GeometryReader { proxy in
-            let height = proxy.size.height
-            let clamped = max(0, min(1, CGFloat(volume)))
-            let fillHeight = muted ? 0 : height * clamped
+            let size = proxy.size
+            let fillH = size.height * fillFraction
             ZStack(alignment: .bottom) {
-                Capsule()
-                    .fill(Color.primary.opacity(0.12))
-                Capsule()
-                    .fill(Color.primary.opacity(0.85))
-                    .frame(height: fillHeight)
-                    .animation(.easeOut(duration: 0.12), value: volume)
-                    .animation(.easeOut(duration: 0.12), value: muted)
+                // Track — the dark backdrop, always full pill.
+                Capsule(style: .continuous)
+                    .fill(Color(white: 0.28))
+
+                // Fill — a rectangle that grows from the bottom. The parent
+                // `clipShape(Capsule)` crops it to the pill's outline, so the
+                // fill's bottom tapers with the pill's curve automatically.
+                // Rectangle height is a native animatable SwiftUI property,
+                // unlike a Canvas draw, so the fill tweens smoothly when
+                // `fillFraction` changes — including blending across rapid
+                // key repeats thanks to the interruptible spring.
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: fillH)
+                    .animation(
+                        .spring(response: 0.28, dampingFraction: 0.86),
+                        value: fillH
+                    )
+
+                Image(systemName: iconName)
+                    .resizable()
+                    .symbolRenderingMode(.monochrome)
+                    .scaledToFit()
+                    .foregroundStyle(.black)
+                    .frame(width: size.width * 0.42, height: size.width * 0.42)
+                    .padding(.bottom, size.width * 0.32)
             }
+            .clipShape(Capsule(style: .continuous))
+            .accessibilityLabel(Text(accessibilityLabel))
         }
-        .frame(width: 10)
     }
 
-    var iconName: String {
+    // MARK: - Symbol resolution
+
+    /// SF Symbol name for the active output. Falls back to a generic speaker
+    /// glyph for unknown transports so the pill always renders something.
+    private var iconName: String {
         if muted { return "speaker.slash.fill" }
         switch kind {
         case .airPods: return "airpods"
-        case .bluetooth: return "dot.radiowaves.left.and.right"
         case .builtInHeadphones: return "headphones"
-        case .builtInSpeakers:
-            return speakerIcon(for: volume)
+        case .builtInSpeakers: return "speaker.wave.2.fill"
+        case .bluetooth: return bluetoothSymbol
         case .usb: return "speaker.wave.2.fill"
         case .airPlay: return "airplayaudio"
-        case .other: return speakerIcon(for: volume)
+        case .other: return "speaker.wave.2.fill"
         }
     }
 
-    private func speakerIcon(for volume: Float) -> String {
-        if volume <= 0.001 { return "speaker.fill" }
-        if volume < 0.34 { return "speaker.wave.1.fill" }
-        if volume < 0.67 { return "speaker.wave.2.fill" }
-        return "speaker.wave.3.fill"
+    /// `bluetooth` SF Symbol exists on macOS 14+ but isn't in every snapshot
+    /// of the framework; fall back to a wave glyph if the system can't
+    /// resolve it.
+    private var bluetoothSymbol: String {
+        if NSImage(systemSymbolName: "bluetooth", accessibilityDescription: nil) != nil {
+            return "bluetooth"
+        }
+        return "dot.radiowaves.left.and.right"
+    }
+
+    private var accessibilityLabel: String {
+        let pct = Int((clampedVolume * 100).rounded())
+        if muted { return "\(deviceName) muted" }
+        return "\(deviceName) volume \(pct) percent"
     }
 }
+
+#if DEBUG
+#Preview("70%") {
+    VolumeHUDView(volume: 0.7, muted: false, kind: .airPods, deviceName: "AirPods", showPercentage: false)
+        .frame(width: 56, height: 220)
+        .padding()
+        .background(Color.black)
+}
+
+#Preview("Muted") {
+    VolumeHUDView(volume: 0.7, muted: true, kind: .builtInSpeakers, deviceName: "Speakers", showPercentage: false)
+        .frame(width: 56, height: 220)
+        .padding()
+        .background(Color.black)
+}
+#endif

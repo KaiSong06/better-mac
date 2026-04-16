@@ -114,7 +114,7 @@ final class NowPlayingStore: ObservableObject {
         album = track.album
         duration = track.duration
         elapsed = min(max(track.elapsed, 0), track.duration)
-        isPlaying = true
+        isPlaying = track.isPlaying
         sourceBundleID = "com.spotify.client"
         if let art = track.artwork {
             artworkImage = art

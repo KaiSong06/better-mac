@@ -19,12 +19,15 @@ final class IslandHotZone: NSObject {
 
     private weak var contentView: NSView?
     private var trackingArea: NSTrackingArea?
-    private var collapseWork: DispatchWorkItem?
     private var globalMonitor: Any?
     private let onChange: (State) -> Void
 
-    /// Grace window in seconds before collapse after the cursor exits.
-    let graceSeconds: TimeInterval = 0.25
+    /// Short hysteresis on collapse. Long enough to absorb enter/exit jitter
+    /// at the tracking-area boundary (the source of the flicker you'd see
+    /// with a zero-grace collapse), short enough to feel instant to a human.
+    /// A fresh `enter()` cancels the pending collapse.
+    private let collapseDebounce: TimeInterval = 0.06
+    private var collapseWork: DispatchWorkItem?
 
     init(onChange: @escaping (State) -> Void) {
         self.onChange = onChange
@@ -75,6 +78,8 @@ final class IslandHotZone: NSObject {
     // MARK: - Public API (also used by hosting NSView's events)
 
     func enter() {
+        // A pending collapse is cancelled by any fresh enter — this is how
+        // the anti-flicker hysteresis collapses back to stable on jitter.
         collapseWork?.cancel()
         collapseWork = nil
         if state != .expanded {
@@ -87,11 +92,13 @@ final class IslandHotZone: NSObject {
         collapseWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
-            self.state = .collapsed
-            self.stopGlobalMonitor()
+            if self.state != .collapsed {
+                self.state = .collapsed
+                self.stopGlobalMonitor()
+            }
         }
         collapseWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + graceSeconds, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + collapseDebounce, execute: work)
     }
 
     // MARK: - Global monitor for leaving the expanded bounds

@@ -10,5 +10,39 @@
       Never hand-edit an <item>'s signature or length — they are produced by
       Sparkle's sign_update tool against the DMG contents.
     -->
+      <item>
+      <title>Version 0.1.0</title>
+      <pubDate>Thu, 16 Apr 2026 06:46:01 +0000</pubDate>
+      <sparkle:version>0.1.0</sparkle:version>
+      <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h3>better-mac 0.1.0</h3>
+        <p>See <a href="https://github.com/KaiSong06/better-mac/releases/tag/v0.1.0">release notes</a>.</p>
+      ]]></description>
+      <enclosure
+        url="https://github.com/KaiSong06/better-mac/releases/download/v0.1.0/better-mac-0.1.0.dmg"
+        length="1256444"
+        type="application/octet-stream"
+        sparkle:edSignature="0L+WYYSVJEQfuRqv5I35QDLHqcv5Fkif/O3DYNHniQLc78PTzdkr2LqznTTh92UyF4ukS12TKhcG4hi2iiMJAQ=="
+      />
+    </item>
+      <item>
+      <title>Version 0.1.1</title>
+      <pubDate>Thu, 16 Apr 2026 06:56:15 +0000</pubDate>
+      <sparkle:version>0.1.1</sparkle:version>
+      <sparkle:shortVersionString>0.1.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h3>better-mac 0.1.1</h3>
+        <p>See <a href="https://github.com/KaiSong06/better-mac/releases/tag/v0.1.1">release notes</a>.</p>
+      ]]></description>
+      <enclosure
+        url="https://github.com/KaiSong06/better-mac/releases/download/v0.1.1/better-mac-0.1.1.dmg"
+        length="1259039"
+        type="application/octet-stream"
+        sparkle:edSignature="58aB+BiyDgYDx0pjUZmX24OvLdmOqIqIncNhebXQp7aFUBhEtMKoFvSgaet2bTVtJ5a/46nXsg5C7B1COkb6Aw=="
+      />
+    </item>
   </channel>
 </rss>

@@ -30,8 +30,12 @@ final class VolumeKeyInterceptor {
         case pressed
         case released
 
+        /// `flags` is the lower 16 bits of an NSSystemDefined data1. The
+        /// state byte lives in the upper 8 bits (`0xA` pressed, `0xB`
+        /// released); the lower 8 bits are a repeat counter we ignore.
         static func from(flags: Int) -> KeyState? {
-            switch flags {
+            let state = (flags & 0xFF00) >> 8
+            switch state {
             case 0xA: return .pressed
             case 0xB: return .released
             default: return nil
@@ -94,16 +98,12 @@ final class VolumeKeyInterceptor {
                 guard ns.type == .systemDefined, ns.subtype.rawValue == 8 else {
                     return Unmanaged.passUnretained(event)
                 }
-                let data1 = ns.data1
-                let keyCode = (data1 & 0xFFFF0000) >> 16
-                let keyFlags = data1 & 0x0000FFFF
-                guard let key = Key.from(keyCode: keyCode),
-                      let state = KeyState.from(flags: keyFlags) else {
+                guard let decoded = VolumeKeyInterceptor.decode(eventData1: ns.data1) else {
                     return Unmanaged.passUnretained(event)
                 }
 
                 Task { @MainActor in
-                    me.handle(Decoded(key: key, state: state))
+                    me.handle(decoded)
                 }
                 // Consume the event so the OS HUD never fires.
                 return nil
@@ -154,8 +154,13 @@ final class VolumeKeyInterceptor {
 
         switch decoded.key {
         case .volumeUp:
+            // Pressing volume up while muted should unmute and restore the
+            // prior volume (which CoreAudio preserves across the mute toggle)
+            // before applying the step. Matches native macOS behaviour.
+            if audio.isMuted { audio.setMuted(false) }
             audio.adjustVolume(by: step)
         case .volumeDown:
+            if audio.isMuted { audio.setMuted(false) }
             audio.adjustVolume(by: -step)
         case .mute:
             audio.toggleMute()
