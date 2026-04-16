@@ -11,6 +11,7 @@
 		0A77E4C8108CC40F72A1090C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D60FBF1DDD1E072DCCE217CB /* Assets.xcassets */; };
 		0B8FC5ADF5569B32430B6302 /* MediaRemoteBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDCE18D09D634C4142A34F1 /* MediaRemoteBridge.swift */; };
 		13DA9CAB61686041AC24B5F2 /* AudioOutputMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */; };
+		13F76761C9BFC1FF4AE36337 /* IslandPlayingRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1ABA43FFE73BE60D822D4D /* IslandPlayingRectTests.swift */; };
 		18C0D5B219BD76A02837040E /* IslandStateResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13FA00427BA292BF912437F /* IslandStateResolver.swift */; };
 		1D1EA97980245B000676977E /* SpotifyAppleScriptClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1B1C74FB4A80FC4B907A5E /* SpotifyAppleScriptClientTests.swift */; };
 		3D9AAF644AB8F33385BD3F11 /* BetterMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902EF0701F780C7FA220A89 /* BetterMacApp.swift */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		07418CF4DD3E6D55DAEC79F3 /* VolumeKeyDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyDecodingTests.swift; sourceTree = "<group>"; };
+		0F1ABA43FFE73BE60D822D4D /* IslandPlayingRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPlayingRectTests.swift; sourceTree = "<group>"; };
 		1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputMonitorTests.swift; sourceTree = "<group>"; };
 		20373684628DA0514EEC6880 /* AppSourceIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSourceIcon.swift; sourceTree = "<group>"; };
 		23A56EB01172D54588A48EDA /* better-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "better-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */,
+				0F1ABA43FFE73BE60D822D4D /* IslandPlayingRectTests.swift */,
 				C0D9F71890B0DE0D8C1122E5 /* IslandStateResolverTests.swift */,
 				316FD5D6B6663832CE979294 /* NowPlayingStoreTests.swift */,
 				63C63BA18B6AD60FCD90AEC5 /* NSScreenNotchTests.swift */,
@@ -319,6 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13DA9CAB61686041AC24B5F2 /* AudioOutputMonitorTests.swift in Sources */,
+				13F76761C9BFC1FF4AE36337 /* IslandPlayingRectTests.swift in Sources */,
 				639DB725B15E322C23D53D45 /* IslandStateResolverTests.swift in Sources */,
 				D65DE48D7A0383AB112FE73B /* NSScreenNotchTests.swift in Sources */,
 				51C868AD6FAAE618B2E935E5 /* NowPlayingStoreTests.swift in Sources */,
