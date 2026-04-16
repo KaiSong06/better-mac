@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Release pipeline for better-mac.
+# Release pipeline for NotchFree.
 #
 # Usage:
 #   ./scripts/release.sh <version>   # e.g. ./scripts/release.sh 0.1.0
@@ -34,15 +34,21 @@ set -euo pipefail
 # Configuration
 # -----------------------------------------------------------------------------
 
-PROJECT_NAME="better-mac"
+# Xcode target / scheme names stayed `better-mac` — renaming them would churn
+# the whole project file. The produced binary is branded via PRODUCT_NAME in
+# project.yml, so `APP_NAME` is what users see; `SCHEME` is the internal
+# xcodebuild handle.
 SCHEME="better-mac"
-BUNDLE_ID="com.KaiSong06.better-mac"
+PROJECT_NAME="better-mac"    # .xcodeproj filename
+APP_NAME="NotchFree"         # user-facing .app / DMG brand
+BUNDLE_ID="com.KaiSong06.NotchFree"
+REPO_NAME="better-mac"       # GitHub repo slug (different from app brand)
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD_DIR="$ROOT/build"
-ARCHIVE_PATH="$BUILD_DIR/$PROJECT_NAME.xcarchive"
+ARCHIVE_PATH="$BUILD_DIR/$APP_NAME.xcarchive"
 EXPORT_DIR="$BUILD_DIR/export"
 APPCAST_PATH="$ROOT/docs/appcast.xml"
-DOWNLOAD_URL_BASE="${DOWNLOAD_URL_BASE:-https://github.com/KaiSong06/$PROJECT_NAME/releases/download}"
+DOWNLOAD_URL_BASE="${DOWNLOAD_URL_BASE:-https://github.com/KaiSong06/$REPO_NAME/releases/download}"
 
 # Sparkle tools resolved after SPM sync.
 SPARKLE_BIN_DIR=""
@@ -174,7 +180,7 @@ xcodebuild \
   -exportOptionsPlist "$EXPORT_PLIST" \
   > "$BUILD_DIR/export.log" 2>&1 \
   || { tail -80 "$BUILD_DIR/export.log"; die "export failed"; }
-APP_PATH="$EXPORT_DIR/$PROJECT_NAME.app"
+APP_PATH="$EXPORT_DIR/$APP_NAME.app"
 [[ -d "$APP_PATH" ]] || die ".app not found at $APP_PATH"
 ok "Exported $APP_PATH"
 
@@ -190,7 +196,7 @@ ok "Codesign verified"
 # Step 6: Notarize the .app
 # -----------------------------------------------------------------------------
 
-APP_ZIP="$BUILD_DIR/$PROJECT_NAME-$VERSION-notarize.zip"
+APP_ZIP="$BUILD_DIR/$APP_NAME-$VERSION-notarize.zip"
 log "Zipping .app for notarization"
 ditto -c -k --keepParent "$APP_PATH" "$APP_ZIP"
 
@@ -212,17 +218,17 @@ ok "Notarization stapled"
 # Step 7: Build the DMG
 # -----------------------------------------------------------------------------
 
-DMG_NAME="$PROJECT_NAME-$VERSION.dmg"
+DMG_NAME="$APP_NAME-$VERSION.dmg"
 DMG_PATH="$BUILD_DIR/$DMG_NAME"
 log "Building DMG"
 rm -f "$DMG_PATH"
 create-dmg \
-  --volname "$PROJECT_NAME $VERSION" \
+  --volname "$APP_NAME $VERSION" \
   --window-pos 200 120 \
   --window-size 540 340 \
   --icon-size 96 \
-  --icon "$PROJECT_NAME.app" 140 160 \
-  --hide-extension "$PROJECT_NAME.app" \
+  --icon "$APP_NAME.app" 140 160 \
+  --hide-extension "$APP_NAME.app" \
   --app-drop-link 400 160 \
   --no-internet-enable \
   "$DMG_PATH" \

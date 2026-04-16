@@ -56,6 +56,6 @@ struct SettingsView: View {
     private var appVersionString: String {
         let short = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
-        return "better-mac \(short) (\(build))"
+        return "NotchFree \(short) (\(build))"
     }
 }

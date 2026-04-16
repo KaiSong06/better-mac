@@ -27,7 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         // belt-and-suspenders safety in case of misconfiguration.
         NSApp.setActivationPolicy(.accessory)
 
-        Log.app.info("better-mac launching")
+        Log.app.info("NotchFree launching")
 
         installStatusItem()
         installSubsystems()
@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        Log.app.info("better-mac terminating")
+        Log.app.info("NotchFree terminating")
         volumeInterceptor?.stop()
     }
 
@@ -51,7 +51,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.image = NSImage(
             systemSymbolName: "waveform.badge.mic",
-            accessibilityDescription: "better-mac"
+            accessibilityDescription: "NotchFree"
         )
         item.button?.image?.isTemplate = true
 
@@ -103,7 +103,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         menu.addItem(updatesItem)
 
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Quit better-mac", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit NotchFree", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
         item.menu = menu
         self.statusItem = item

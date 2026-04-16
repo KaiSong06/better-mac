@@ -18,7 +18,7 @@ settings:
     SWIFT_VERSION: "5.10"
     MARKETING_VERSION: "0.1.1"
     CURRENT_PROJECT_VERSION: "5"
-    PRODUCT_BUNDLE_IDENTIFIER: com.KaiSong06.better-mac
+    PRODUCT_BUNDLE_IDENTIFIER: com.KaiSong06.NotchFree
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Manual
     CODE_SIGN_IDENTITY: "-"
@@ -71,8 +71,8 @@ targets:
         NSSupportsAutomaticTermination: NO
         NSSupportsSuddenTermination: NO
         NSHumanReadableCopyright: "© 2026 KaiSong06"
-        CFBundleName: better-mac
-        CFBundleDisplayName: better-mac
+        CFBundleName: NotchFree
+        CFBundleDisplayName: NotchFree
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleExecutable: $(EXECUTABLE_NAME)
@@ -80,7 +80,7 @@ targets:
         CFBundlePackageType: APPL
         CFBundleInfoDictionaryVersion: "6.0"
         NSAppleEventsUsageDescription: >-
-          better-mac uses Apple Events to read the current track info from Spotify
+          NotchFree uses Apple Events to read the current track info from Spotify
           as a fallback when system Now Playing is unavailable.
         LSApplicationCategoryType: public.app-category.utilities
         # Sparkle: update feed + public EdDSA verification key.
@@ -102,6 +102,14 @@ targets:
       base:
         INFOPLIST_FILE: better-mac/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: better-mac/better-mac.entitlements
+        # User-facing brand. The Xcode target stays "better-mac" internally;
+        # PRODUCT_NAME is what controls the .app bundle name and the
+        # executable inside it.
+        PRODUCT_NAME: NotchFree
+        # Keep the Swift module name stable so tests can `@testable import
+        # better_mac` without a mass rename. Only the user-visible bundle /
+        # executable picks up the new brand.
+        PRODUCT_MODULE_NAME: better_mac
   better-macTests:
     type: bundle.unit-test
     platform: macOS
@@ -113,7 +121,7 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         BUNDLE_LOADER: "$(TEST_HOST)"
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/better-mac.app/Contents/MacOS/better-mac"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/NotchFree.app/Contents/MacOS/NotchFree"
 schemes:
   better-mac:
     build:

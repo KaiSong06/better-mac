@@ -19,11 +19,11 @@ enum Permissions {
         Log.perm.info("Prompting for Accessibility")
 
         let alert = NSAlert()
-        alert.messageText = "better-mac needs Accessibility access"
+        alert.messageText = "NotchFree needs Accessibility access"
         alert.informativeText = """
-        To intercept volume key presses and replace the native macOS volume indicator, better-mac needs the Accessibility permission. It does not read regular keystrokes, clipboard data, or passwords.
+        To intercept volume key presses and replace the native macOS volume indicator, NotchFree needs the Accessibility permission. It does not read regular keystrokes, clipboard data, or passwords.
 
-        Toggle better-mac ON under System Settings → Privacy & Security → Accessibility.
+        Toggle NotchFree ON under System Settings → Privacy & Security → Accessibility.
         """
         alert.alertStyle = .informational
         alert.addButton(withTitle: "Open System Settings…")

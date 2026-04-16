@@ -1,4 +1,4 @@
-# better-mac
+# NotchFree
 
 A lightweight macOS utility that brings two iPhone-style niceties to your Mac:
 
@@ -15,7 +15,7 @@ Runs as a menu bar agent with no Dock icon. Auto-updates via Sparkle.
 ## Install
 
 1. Download the latest DMG from [Releases](https://github.com/KaiSong06/better-mac/releases/latest).
-2. Open the DMG and drag `better-mac.app` into `/Applications`.
+2. Open the DMG and drag `NotchFree.app` into `/Applications`.
 3. Launch the app. Grant Accessibility permission when prompted (required for the volume HUD feature to intercept hardware volume keys; the Dynamic Island works without it).
 4. Optionally toggle **Open at Login** from the menu bar icon.
 
@@ -31,7 +31,7 @@ Requirements:
 ```bash
 xcodegen generate
 xcodebuild -project better-mac.xcodeproj -scheme better-mac -configuration Debug build
-open "$(xcodebuild -project better-mac.xcodeproj -scheme better-mac -showBuildSettings 2>/dev/null | awk -F'=' '/BUILT_PRODUCTS_DIR/ {gsub(/ /,"",$2); print $2; exit}')/better-mac.app"
+open "$(xcodebuild -project better-mac.xcodeproj -scheme better-mac -showBuildSettings 2>/dev/null | awk -F'=' '/BUILT_PRODUCTS_DIR/ {gsub(/ /,"",$2); print $2; exit}')/NotchFree.app"
 ```
 
 ---
@@ -74,10 +74,10 @@ open "$(xcodebuild -project better-mac.xcodeproj -scheme better-mac -showBuildSe
 This will:
 1. Bump `MARKETING_VERSION` in `project.yml` and increment `CURRENT_PROJECT_VERSION`.
 2. Regenerate the Xcode project.
-3. Archive → export a Developer ID signed `better-mac.app`.
+3. Archive → export a Developer ID signed `NotchFree.app`.
 4. Submit the `.app` to Apple notarization (waits for the ticket).
 5. Staple the ticket.
-6. Package as `better-mac-0.1.0.dmg` (drag-to-Applications DMG via `create-dmg`).
+6. Package as `NotchFree-0.1.0.dmg` (drag-to-Applications DMG via `create-dmg`).
 7. Sign + notarize + staple the DMG.
 8. Compute the Sparkle EdDSA signature of the DMG and append a new `<item>` to `docs/appcast.xml`.
 
@@ -88,7 +88,7 @@ git add project.yml docs/appcast.xml
 git commit -m "release: v0.1.0"
 git tag v0.1.0
 git push && git push --tags
-gh release create v0.1.0 --generate-notes build/better-mac-0.1.0.dmg
+gh release create v0.1.0 --generate-notes build/NotchFree-0.1.0.dmg
 ```
 
 GitHub Pages (serving `/docs` on `main`) then has the updated `appcast.xml` live at https://KaiSong06.github.io/better-mac/appcast.xml, so existing installs pick up the update on their next Sparkle check.

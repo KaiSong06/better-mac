@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>better-mac</string>
+	<string>NotchFree</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>better-mac</string>
+	<string>NotchFree</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,7 +27,7 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>better-mac uses Apple Events to read the current track info from Spotify as a fallback when system Now Playing is unavailable.</string>
+	<string>NotchFree uses Apple Events to read the current track info from Spotify as a fallback when system Now Playing is unavailable.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 KaiSong06</string>
 	<key>NSSupportsAutomaticTermination</key>

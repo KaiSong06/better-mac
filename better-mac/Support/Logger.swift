@@ -3,9 +3,9 @@ import os
 
 /// Thin wrapper around os.Logger with pre-bound subsystem and a category per
 /// subsystem. Viewable with:
-///   log stream --predicate 'subsystem == "com.KaiSong06.better-mac"'
+///   log stream --predicate 'subsystem == "com.KaiSong06.NotchFree"'
 enum Log {
-    static let subsystem = "com.KaiSong06.better-mac"
+    static let subsystem = "com.KaiSong06.NotchFree"
 
     static let app = Logger(subsystem: subsystem, category: "app")
     static let island = Logger(subsystem: subsystem, category: "island")
