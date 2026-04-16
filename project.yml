@@ -1,0 +1,93 @@
+name: better-mac
+options:
+  bundleIdPrefix: com.KaiSong06
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    SWIFT_VERSION: "5.10"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    PRODUCT_BUNDLE_IDENTIFIER: com.KaiSong06.better-mac
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: "-"
+    ENABLE_HARDENED_RUNTIME: YES
+    SWIFT_STRICT_CONCURRENCY: minimal
+    CLANG_ENABLE_MODULES: YES
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ENABLE_PREVIEWS: YES
+targets:
+  better-mac:
+    type: application
+    platform: macOS
+    sources:
+      - path: better-mac
+        excludes:
+          - "Resources/Info.plist"
+          - "better-mac.entitlements"
+    resources:
+      - better-mac/Resources/Assets.xcassets
+    info:
+      path: better-mac/Resources/Info.plist
+      properties:
+        LSUIElement: YES
+        LSMinimumSystemVersion: "14.0"
+        NSSupportsAutomaticTermination: NO
+        NSSupportsSuddenTermination: NO
+        NSHumanReadableCopyright: "© 2026 KaiSong06"
+        CFBundleName: better-mac
+        CFBundleDisplayName: better-mac
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundlePackageType: APPL
+        CFBundleInfoDictionaryVersion: "6.0"
+        NSAppleEventsUsageDescription: >-
+          better-mac uses Apple Events to read the current track info from Spotify
+          as a fallback when system Now Playing is unavailable.
+        LSApplicationCategoryType: public.app-category.utilities
+    entitlements:
+      path: better-mac/better-mac.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+        com.apple.security.automation.apple-events: true
+    settings:
+      base:
+        INFOPLIST_FILE: better-mac/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: better-mac/better-mac.entitlements
+  better-macTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - better-macTests
+    dependencies:
+      - target: better-mac
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/better-mac.app/Contents/MacOS/better-mac"
+schemes:
+  better-mac:
+    build:
+      targets:
+        better-mac: all
+        better-macTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - better-macTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

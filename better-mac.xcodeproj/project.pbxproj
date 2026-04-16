@@ -1,0 +1,564 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0353AABCD403D7B9336A10F7 /* AudioOutputMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8806093C97734C5C13201A7C /* AudioOutputMonitor.swift */; };
+		0A77E4C8108CC40F72A1090C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D60FBF1DDD1E072DCCE217CB /* Assets.xcassets */; };
+		0B8FC5ADF5569B32430B6302 /* MediaRemoteBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDCE18D09D634C4142A34F1 /* MediaRemoteBridge.swift */; };
+		13DA9CAB61686041AC24B5F2 /* AudioOutputMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */; };
+		1D1EA97980245B000676977E /* SpotifyAppleScriptClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1B1C74FB4A80FC4B907A5E /* SpotifyAppleScriptClientTests.swift */; };
+		3D9AAF644AB8F33385BD3F11 /* BetterMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902EF0701F780C7FA220A89 /* BetterMacApp.swift */; };
+		45E7B890EE758DF73A79D027 /* IslandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB82C4C86B9D6A6B7C0828AF /* IslandView.swift */; };
+		51C868AD6FAAE618B2E935E5 /* NowPlayingStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316FD5D6B6663832CE979294 /* NowPlayingStoreTests.swift */; };
+		53F5D3A662F362309CDC7D9D /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A745A0DC0223E662FBE61FD /* Logger.swift */; };
+		55A479BAEEE3B810E1479B84 /* SeekBarMathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DD12BA5EDF03A450DC339B /* SeekBarMathTests.swift */; };
+		5C0CD3FF3DD9694BF774C2F8 /* SpotifyAppleScriptClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62C7EE105A5622E39CBAE5E /* SpotifyAppleScriptClient.swift */; };
+		6DB8C14255D24269763B56B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BDC55F104D14EF69E8D800 /* AppDelegate.swift */; };
+		749FF53A263571BF8EAB136F /* NowPlayingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE5445C638E34F14F609439 /* NowPlayingStore.swift */; };
+		81470921E8CD90D5AF3D665E /* VolumeKeyDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07418CF4DD3E6D55DAEC79F3 /* VolumeKeyDecodingTests.swift */; };
+		82CF71CBC3DA6B15A7EA243A /* VolumeHUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D7F3040A7DE14A010BCBD /* VolumeHUDView.swift */; };
+		84D3196FC846692FDB5F1164 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E5958C27FDAC8F60459BC /* Permissions.swift */; };
+		8F91A2EA28CFD37A6C2BC2A3 /* NSScreen+Notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71107F5210904590C140F46 /* NSScreen+Notch.swift */; };
+		9B0F9E417CD5869B996209F4 /* AppSourceIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20373684628DA0514EEC6880 /* AppSourceIcon.swift */; };
+		BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56026F74A548478AB875D92C /* VolumeKeyInterceptor.swift */; };
+		C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CC6798F930024C11F00E8C /* VolumeHUDWindowController.swift */; };
+		CA4CBB9F0E5ECE37C74880C8 /* SeekBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71065B0518B06ACCC45F925 /* SeekBarView.swift */; };
+		D65DE48D7A0383AB112FE73B /* NSScreenNotchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C63BA18B6AD60FCD90AEC5 /* NSScreenNotchTests.swift */; };
+		DA5D46B5AE1EA293C26DA899 /* IslandHotZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5600310F762473AD5EAFD38C /* IslandHotZone.swift */; };
+		E28397BA603BB61055B53D60 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D411D731A18EE205A882EAE /* SettingsView.swift */; };
+		EB07F1EF061ADC0B419075EC /* IslandControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461EC19BA73FE080BD4A5FB4 /* IslandControlsView.swift */; };
+		EF593C97F5F6F9A0A524BE0E /* IslandWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B14C51E4707BFEA35AE067 /* IslandWindowController.swift */; };
+		FF902B95A0911DA2AE1110F4 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2477955D7FE1520D317FCBA /* AppState.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C48185B3B7615F5F5A7C6F1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 602FDF48E5F2DAB7A5ACD2F5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75208F5B11C2FA7491320CDE;
+			remoteInfo = "better-mac";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07418CF4DD3E6D55DAEC79F3 /* VolumeKeyDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyDecodingTests.swift; sourceTree = "<group>"; };
+		1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputMonitorTests.swift; sourceTree = "<group>"; };
+		20373684628DA0514EEC6880 /* AppSourceIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSourceIcon.swift; sourceTree = "<group>"; };
+		23A56EB01172D54588A48EDA /* better-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "better-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A745A0DC0223E662FBE61FD /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		316FD5D6B6663832CE979294 /* NowPlayingStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingStoreTests.swift; sourceTree = "<group>"; };
+		35B14C51E4707BFEA35AE067 /* IslandWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandWindowController.swift; sourceTree = "<group>"; };
+		3A3D7F3040A7DE14A010BCBD /* VolumeHUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeHUDView.swift; sourceTree = "<group>"; };
+		461EC19BA73FE080BD4A5FB4 /* IslandControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandControlsView.swift; sourceTree = "<group>"; };
+		5600310F762473AD5EAFD38C /* IslandHotZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandHotZone.swift; sourceTree = "<group>"; };
+		56026F74A548478AB875D92C /* VolumeKeyInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyInterceptor.swift; sourceTree = "<group>"; };
+		63C63BA18B6AD60FCD90AEC5 /* NSScreenNotchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSScreenNotchTests.swift; sourceTree = "<group>"; };
+		69CC6798F930024C11F00E8C /* VolumeHUDWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeHUDWindowController.swift; sourceTree = "<group>"; };
+		6D411D731A18EE205A882EAE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7902EF0701F780C7FA220A89 /* BetterMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterMacApp.swift; sourceTree = "<group>"; };
+		8806093C97734C5C13201A7C /* AudioOutputMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputMonitor.swift; sourceTree = "<group>"; };
+		93BDC55F104D14EF69E8D800 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A62C7EE105A5622E39CBAE5E /* SpotifyAppleScriptClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAppleScriptClient.swift; sourceTree = "<group>"; };
+		AD1B1C74FB4A80FC4B907A5E /* SpotifyAppleScriptClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAppleScriptClientTests.swift; sourceTree = "<group>"; };
+		B71065B0518B06ACCC45F925 /* SeekBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekBarView.swift; sourceTree = "<group>"; };
+		C6DD12BA5EDF03A450DC339B /* SeekBarMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekBarMathTests.swift; sourceTree = "<group>"; };
+		CAE5445C638E34F14F609439 /* NowPlayingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingStore.swift; sourceTree = "<group>"; };
+		D02E5958C27FDAC8F60459BC /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		D60FBF1DDD1E072DCCE217CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E6C62AF0B5CA3163ED937B27 /* better-macTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "better-macTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB82C4C86B9D6A6B7C0828AF /* IslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandView.swift; sourceTree = "<group>"; };
+		F2477955D7FE1520D317FCBA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		F71107F5210904590C140F46 /* NSScreen+Notch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+Notch.swift"; sourceTree = "<group>"; };
+		FFDCE18D09D634C4142A34F1 /* MediaRemoteBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteBridge.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		007F46E913025A769D6EC826 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				93BDC55F104D14EF69E8D800 /* AppDelegate.swift */,
+				F2477955D7FE1520D317FCBA /* AppState.swift */,
+				7902EF0701F780C7FA220A89 /* BetterMacApp.swift */,
+				6D411D731A18EE205A882EAE /* SettingsView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		0A1E72FC5C005E6D0A84A067 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				2A745A0DC0223E662FBE61FD /* Logger.swift */,
+				F71107F5210904590C140F46 /* NSScreen+Notch.swift */,
+				D02E5958C27FDAC8F60459BC /* Permissions.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		3D8C11A849638AFE161E954A /* Volume */ = {
+			isa = PBXGroup;
+			children = (
+				8806093C97734C5C13201A7C /* AudioOutputMonitor.swift */,
+				3A3D7F3040A7DE14A010BCBD /* VolumeHUDView.swift */,
+				69CC6798F930024C11F00E8C /* VolumeHUDWindowController.swift */,
+				56026F74A548478AB875D92C /* VolumeKeyInterceptor.swift */,
+			);
+			path = Volume;
+			sourceTree = "<group>";
+		};
+		3EF81924746F355250B427C4 /* Island */ = {
+			isa = PBXGroup;
+			children = (
+				20373684628DA0514EEC6880 /* AppSourceIcon.swift */,
+				461EC19BA73FE080BD4A5FB4 /* IslandControlsView.swift */,
+				5600310F762473AD5EAFD38C /* IslandHotZone.swift */,
+				EB82C4C86B9D6A6B7C0828AF /* IslandView.swift */,
+				35B14C51E4707BFEA35AE067 /* IslandWindowController.swift */,
+				B71065B0518B06ACCC45F925 /* SeekBarView.swift */,
+			);
+			path = Island;
+			sourceTree = "<group>";
+		};
+		628B8FC1434A5AD53B9B28B8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				23A56EB01172D54588A48EDA /* better-mac.app */,
+				E6C62AF0B5CA3163ED937B27 /* better-macTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6EF3B3F071F9B33B6736ABA7 = {
+			isa = PBXGroup;
+			children = (
+				E153B1644994C8A8C91B8B31 /* better-mac */,
+				A6DD1707E3B4AAB4E4616795 /* better-macTests */,
+				628B8FC1434A5AD53B9B28B8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A6DD1707E3B4AAB4E4616795 /* better-macTests */ = {
+			isa = PBXGroup;
+			children = (
+				1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */,
+				316FD5D6B6663832CE979294 /* NowPlayingStoreTests.swift */,
+				63C63BA18B6AD60FCD90AEC5 /* NSScreenNotchTests.swift */,
+				C6DD12BA5EDF03A450DC339B /* SeekBarMathTests.swift */,
+				AD1B1C74FB4A80FC4B907A5E /* SpotifyAppleScriptClientTests.swift */,
+				07418CF4DD3E6D55DAEC79F3 /* VolumeKeyDecodingTests.swift */,
+			);
+			path = "better-macTests";
+			sourceTree = "<group>";
+		};
+		A734BEC5869F66C36A61734B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D60FBF1DDD1E072DCCE217CB /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D6F7632D736C4A8CA75869B2 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				FFDCE18D09D634C4142A34F1 /* MediaRemoteBridge.swift */,
+				CAE5445C638E34F14F609439 /* NowPlayingStore.swift */,
+				A62C7EE105A5622E39CBAE5E /* SpotifyAppleScriptClient.swift */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
+		E153B1644994C8A8C91B8B31 /* better-mac */ = {
+			isa = PBXGroup;
+			children = (
+				007F46E913025A769D6EC826 /* App */,
+				3EF81924746F355250B427C4 /* Island */,
+				D6F7632D736C4A8CA75869B2 /* Media */,
+				A734BEC5869F66C36A61734B /* Resources */,
+				0A1E72FC5C005E6D0A84A067 /* Support */,
+				3D8C11A849638AFE161E954A /* Volume */,
+			);
+			path = "better-mac";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		131901AE5BE7492EFD4E59A6 /* better-macTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 466F513B6D0DA51FAFA9C7B7 /* Build configuration list for PBXNativeTarget "better-macTests" */;
+			buildPhases = (
+				C508D16F8C4C1A854B30F34F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B0A1A7F61AE3C07FF6AE6FB8 /* PBXTargetDependency */,
+			);
+			name = "better-macTests";
+			packageProductDependencies = (
+			);
+			productName = "better-macTests";
+			productReference = E6C62AF0B5CA3163ED937B27 /* better-macTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		75208F5B11C2FA7491320CDE /* better-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D7B58FB9D9F6AE865A96FD08 /* Build configuration list for PBXNativeTarget "better-mac" */;
+			buildPhases = (
+				191B4AA17D66A38398AF37C0 /* Sources */,
+				23866A39CCBA68FEFAF8489B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "better-mac";
+			packageProductDependencies = (
+			);
+			productName = "better-mac";
+			productReference = 23A56EB01172D54588A48EDA /* better-mac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		602FDF48E5F2DAB7A5ACD2F5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					131901AE5BE7492EFD4E59A6 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					75208F5B11C2FA7491320CDE = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 90C88767CB1EB67CC1DC2082 /* Build configuration list for PBXProject "better-mac" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6EF3B3F071F9B33B6736ABA7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 628B8FC1434A5AD53B9B28B8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				75208F5B11C2FA7491320CDE /* better-mac */,
+				131901AE5BE7492EFD4E59A6 /* better-macTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		23866A39CCBA68FEFAF8489B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A77E4C8108CC40F72A1090C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		191B4AA17D66A38398AF37C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DB8C14255D24269763B56B0 /* AppDelegate.swift in Sources */,
+				9B0F9E417CD5869B996209F4 /* AppSourceIcon.swift in Sources */,
+				FF902B95A0911DA2AE1110F4 /* AppState.swift in Sources */,
+				0353AABCD403D7B9336A10F7 /* AudioOutputMonitor.swift in Sources */,
+				3D9AAF644AB8F33385BD3F11 /* BetterMacApp.swift in Sources */,
+				EB07F1EF061ADC0B419075EC /* IslandControlsView.swift in Sources */,
+				DA5D46B5AE1EA293C26DA899 /* IslandHotZone.swift in Sources */,
+				45E7B890EE758DF73A79D027 /* IslandView.swift in Sources */,
+				EF593C97F5F6F9A0A524BE0E /* IslandWindowController.swift in Sources */,
+				53F5D3A662F362309CDC7D9D /* Logger.swift in Sources */,
+				0B8FC5ADF5569B32430B6302 /* MediaRemoteBridge.swift in Sources */,
+				8F91A2EA28CFD37A6C2BC2A3 /* NSScreen+Notch.swift in Sources */,
+				749FF53A263571BF8EAB136F /* NowPlayingStore.swift in Sources */,
+				84D3196FC846692FDB5F1164 /* Permissions.swift in Sources */,
+				CA4CBB9F0E5ECE37C74880C8 /* SeekBarView.swift in Sources */,
+				E28397BA603BB61055B53D60 /* SettingsView.swift in Sources */,
+				5C0CD3FF3DD9694BF774C2F8 /* SpotifyAppleScriptClient.swift in Sources */,
+				82CF71CBC3DA6B15A7EA243A /* VolumeHUDView.swift in Sources */,
+				C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */,
+				BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C508D16F8C4C1A854B30F34F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13DA9CAB61686041AC24B5F2 /* AudioOutputMonitorTests.swift in Sources */,
+				D65DE48D7A0383AB112FE73B /* NSScreenNotchTests.swift in Sources */,
+				51C868AD6FAAE618B2E935E5 /* NowPlayingStoreTests.swift in Sources */,
+				55A479BAEEE3B810E1479B84 /* SeekBarMathTests.swift in Sources */,
+				1D1EA97980245B000676977E /* SpotifyAppleScriptClientTests.swift in Sources */,
+				81470921E8CD90D5AF3D665E /* VolumeKeyDecodingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B0A1A7F61AE3C07FF6AE6FB8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75208F5B11C2FA7491320CDE /* better-mac */;
+			targetProxy = C48185B3B7615F5F5A7C6F1B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3050F2A1139BCD6846E1B7F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.KaiSong06.better-mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Release;
+		};
+		357DE7A0485EF0E49F8141E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.KaiSong06.better-mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Debug;
+		};
+		3F819BCA8CEAAB960A670FC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "better-mac/better-mac.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "better-mac/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		59A31C2DEAE8A42C172F0238 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "better-mac/better-mac.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "better-mac/Resources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5B32EF92B51F147E3A8AED7E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/better-mac.app/Contents/MacOS/better-mac";
+			};
+			name = Release;
+		};
+		EE36CBCA7B3CDCC6F8F144DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/better-mac.app/Contents/MacOS/better-mac";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		466F513B6D0DA51FAFA9C7B7 /* Build configuration list for PBXNativeTarget "better-macTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE36CBCA7B3CDCC6F8F144DD /* Debug */,
+				5B32EF92B51F147E3A8AED7E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		90C88767CB1EB67CC1DC2082 /* Build configuration list for PBXProject "better-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				357DE7A0485EF0E49F8141E7 /* Debug */,
+				3050F2A1139BCD6846E1B7F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D7B58FB9D9F6AE865A96FD08 /* Build configuration list for PBXNativeTarget "better-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F819BCA8CEAAB960A670FC4 /* Debug */,
+				59A31C2DEAE8A42C172F0238 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 602FDF48E5F2DAB7A5ACD2F5 /* Project object */;
+}
