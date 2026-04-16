@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>better-mac Updates</title>
+    <link>https://KaiSong06.github.io/better-mac/appcast.xml</link>
+    <description>Release feed for better-mac</description>
+    <language>en</language>
+    <!--
+      New <item> entries are appended automatically by scripts/release.sh.
+      Never hand-edit an <item>'s signature or length — they are produced by
+      Sparkle's sign_update tool against the DMG contents.
+    -->
+  </channel>
+</rss>

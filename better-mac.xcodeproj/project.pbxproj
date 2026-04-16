@@ -28,7 +28,9 @@
 		84D3196FC846692FDB5F1164 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E5958C27FDAC8F60459BC /* Permissions.swift */; };
 		8F91A2EA28CFD37A6C2BC2A3 /* NSScreen+Notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71107F5210904590C140F46 /* NSScreen+Notch.swift */; };
 		90B89387E95EC161C399E6C1 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59D3C352D1ED0EF5F392828 /* WaveformView.swift */; };
+		9A23EF6E95EFA0B43C4FA599 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 53A829557BBA680486C70309 /* Sparkle */; };
 		9B0F9E417CD5869B996209F4 /* AppSourceIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20373684628DA0514EEC6880 /* AppSourceIcon.swift */; };
+		A8FED9B668061A1291B520D9 /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CFA27F318B52A15869D373 /* UpdaterController.swift */; };
 		BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56026F74A548478AB875D92C /* VolumeKeyInterceptor.swift */; };
 		C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CC6798F930024C11F00E8C /* VolumeHUDWindowController.swift */; };
 		CA4CBB9F0E5ECE37C74880C8 /* SeekBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71065B0518B06ACCC45F925 /* SeekBarView.swift */; };
@@ -53,6 +55,7 @@
 /* Begin PBXFileReference section */
 		07418CF4DD3E6D55DAEC79F3 /* VolumeKeyDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyDecodingTests.swift; sourceTree = "<group>"; };
 		0F1ABA43FFE73BE60D822D4D /* IslandPlayingRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandPlayingRectTests.swift; sourceTree = "<group>"; };
+		13CFA27F318B52A15869D373 /* UpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterController.swift; sourceTree = "<group>"; };
 		1A54A3D5FBC8B39163DA6E63 /* AudioOutputMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputMonitorTests.swift; sourceTree = "<group>"; };
 		20373684628DA0514EEC6880 /* AppSourceIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSourceIcon.swift; sourceTree = "<group>"; };
 		23A56EB01172D54588A48EDA /* better-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "better-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +89,17 @@
 		FFDCE18D09D634C4142A34F1 /* MediaRemoteBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		B54A9388DA0361AC6E0EB3E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A23EF6E95EFA0B43C4FA599 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
 		007F46E913025A769D6EC826 /* App */ = {
 			isa = PBXGroup;
@@ -94,6 +108,7 @@
 				F2477955D7FE1520D317FCBA /* AppState.swift */,
 				7902EF0701F780C7FA220A89 /* BetterMacApp.swift */,
 				6D411D731A18EE205A882EAE /* SettingsView.swift */,
+				13CFA27F318B52A15869D373 /* UpdaterController.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -225,6 +240,7 @@
 			buildPhases = (
 				191B4AA17D66A38398AF37C0 /* Sources */,
 				23866A39CCBA68FEFAF8489B /* Resources */,
+				B54A9388DA0361AC6E0EB3E3 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -232,6 +248,7 @@
 			);
 			name = "better-mac";
 			packageProductDependencies = (
+				53A829557BBA680486C70309 /* Sparkle */,
 			);
 			productName = "better-mac";
 			productReference = 23A56EB01172D54588A48EDA /* better-mac.app */;
@@ -248,11 +265,11 @@
 				TargetAttributes = {
 					131901AE5BE7492EFD4E59A6 = {
 						DevelopmentTeam = "";
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					75208F5B11C2FA7491320CDE = {
 						DevelopmentTeam = "";
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -265,6 +282,9 @@
 			);
 			mainGroup = 6EF3B3F071F9B33B6736ABA7;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F31E07485E1E1EB79B791C4D /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 628B8FC1434A5AD53B9B28B8 /* Products */;
 			projectDirPath = "";
@@ -310,6 +330,7 @@
 				CA4CBB9F0E5ECE37C74880C8 /* SeekBarView.swift in Sources */,
 				E28397BA603BB61055B53D60 /* SettingsView.swift in Sources */,
 				5C0CD3FF3DD9694BF774C2F8 /* SpotifyAppleScriptClient.swift in Sources */,
+				A8FED9B668061A1291B520D9 /* UpdaterController.swift in Sources */,
 				82CF71CBC3DA6B15A7EA243A /* VolumeHUDView.swift in Sources */,
 				C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */,
 				BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */,
@@ -377,8 +398,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -399,6 +420,7 @@
 				MARKETING_VERSION = 0.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CODE_SIGN_FLAGS = "--timestamp";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.KaiSong06.better-mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -444,12 +466,12 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -575,6 +597,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F31E07485E1E1EB79B791C4D /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		53A829557BBA680486C70309 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F31E07485E1E1EB79B791C4D /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 602FDF48E5F2DAB7A5ACD2F5 /* Project object */;
 }

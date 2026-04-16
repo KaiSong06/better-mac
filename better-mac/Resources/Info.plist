@@ -34,5 +34,13 @@
 	<false/>
 	<key>NSSupportsSuddenTermination</key>
 	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://KaiSong06.github.io/better-mac/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>vVnUWAkJByng74JEK9CJI+CeAoMfG3eOET4fkxucXHU=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>

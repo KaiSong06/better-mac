@@ -9,6 +9,7 @@ import ServiceManagement
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     let appState = AppState()
+    let updater = UpdaterController.shared
 
     // Subsystems (lazily created once the launch finishes).
     private var statusItem: NSStatusItem?
@@ -92,6 +93,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         )
         settingsItem.target = self
         menu.addItem(settingsItem)
+
+        let updatesItem = NSMenuItem(
+            title: "Check for Updates…",
+            action: #selector(UpdaterController.checkForUpdates(_:)),
+            keyEquivalent: ""
+        )
+        updatesItem.target = updater
+        menu.addItem(updatesItem)
 
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit better-mac", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))

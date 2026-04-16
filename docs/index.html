@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>better-mac — a smaller, quieter Mac</title>
+  <meta name="description" content="A tiny macOS menu-bar utility that turns the notch into a Dynamic Island and replaces the system volume HUD with an iPhone-style pill." />
+  <meta property="og:title" content="better-mac" />
+  <meta property="og:description" content="Dynamic Island + iPhone-style volume HUD for your Mac." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elev: #141414;
+      --fg: #fafafa;
+      --fg-dim: #a3a3a3;
+      --fg-muted: #666;
+      --accent: #fafafa;
+      --border: rgba(255, 255, 255, 0.08);
+
+      --text-hero: clamp(3.5rem, 1rem + 8vw, 8.5rem);
+      --text-section: clamp(2rem, 1rem + 3vw, 3.5rem);
+      --text-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+
+      --space-section: clamp(5rem, 4rem + 6vw, 11rem);
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      font-size: var(--text-body);
+      line-height: 1.55;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Layout ---------- */
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 4vw, 3rem);
+    }
+
+    /* ---------- Menu bar ---------- */
+
+    nav.bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav.bar .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.9rem;
+      padding-bottom: 0.9rem;
+    }
+    .brand {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .brand-dot {
+      width: 0.7rem;
+      height: 0.7rem;
+      background: var(--fg);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+    }
+    nav.bar ul {
+      list-style: none;
+      display: flex;
+      gap: 1.75rem;
+      font-size: 0.9rem;
+      color: var(--fg-dim);
+    }
+    nav.bar li a:hover { color: var(--fg); }
+
+    @media (max-width: 640px) {
+      nav.bar ul { display: none; }
+    }
+
+    /* ---------- Hero ---------- */
+
+    header.hero {
+      padding-top: calc(7rem + var(--space-section));
+      padding-bottom: var(--space-section);
+      position: relative;
+      overflow: hidden;
+    }
+    .eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 1.75rem;
+    }
+    h1 {
+      font-size: var(--text-hero);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+      margin-bottom: 1.75rem;
+    }
+    h1 em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+    }
+    .lede {
+      max-width: 44ch;
+      font-size: clamp(1.125rem, 1rem + 0.4vw, 1.4rem);
+      color: var(--fg-dim);
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: transform 0.25s var(--ease-out-expo),
+                  background 0.2s ease;
+    }
+    .btn.primary {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .btn.primary:hover {
+      background: #fff;
+      transform: translateY(-1px);
+    }
+    .btn.ghost {
+      border: 1px solid var(--border);
+      color: var(--fg-dim);
+    }
+    .btn.ghost:hover {
+      border-color: var(--fg);
+      color: var(--fg);
+    }
+    .btn .meta {
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      font-weight: 400;
+    }
+
+    /* ---------- Island mock ---------- */
+
+    .island-stage {
+      position: relative;
+      margin: clamp(4rem, 10vw, 8rem) 0 0;
+      min-height: 360px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: clamp(2rem, 5vw, 4rem) 2rem 4rem;
+      overflow: hidden;
+    }
+    .island-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at top, rgba(255,255,255,0.04), transparent 60%);
+      pointer-events: none;
+    }
+    .stage-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+    }
+    .stage-bar .dots {
+      display: flex;
+      gap: 6px;
+    }
+    .stage-bar .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .island {
+      margin: 0 auto;
+      width: 340px;
+      height: 36px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 8px;
+      box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-top: none;
+    }
+    .island .thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #a855f7, #ec4899 50%, #f97316);
+      flex-shrink: 0;
+    }
+    .island svg { flex: 1; height: 20px; display: block; }
+    .island svg path {
+      stroke: rgba(255, 255, 255, 0.92);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      fill: none;
+      animation: wave 2.2s ease-in-out infinite;
+    }
+    @keyframes wave {
+      0%   { d: path("M0 10 C 40 2, 80 18, 120 10 S 200 2, 240 10 S 320 18, 360 10"); }
+      50%  { d: path("M0 10 C 40 18, 80 2, 120 10 S 200 18, 240 10 S 320 2, 360 10"); }
+      100% { d: path("M0 10 C 40 2, 80 18, 120 10 S 200 2, 240 10 S 320 18, 360 10"); }
+    }
+
+    .island-caption {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.9rem;
+      color: var(--fg-muted);
+    }
+
+    /* ---------- Sections ---------- */
+
+    section {
+      padding: var(--space-section) 0;
+      border-top: 1px solid var(--border);
+    }
+    section h2 {
+      font-size: var(--text-section);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      font-weight: 600;
+      margin-bottom: 3rem;
+      max-width: 22ch;
+    }
+    section h2 em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* ---------- Features ---------- */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature {
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-elev);
+      transition: border-color 0.2s ease, transform 0.25s var(--ease-out-expo);
+    }
+    .feature:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+    }
+    .feature-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      color: var(--fg-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1;
+    }
+    .feature h3 {
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+    .feature p {
+      color: var(--fg-dim);
+      font-weight: 300;
+    }
+
+    /* ---------- Install ---------- */
+
+    .install-steps {
+      counter-reset: step;
+      display: grid;
+      gap: 1.5rem;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step::before {
+      counter-increment: step;
+      content: counter(step, decimal-leading-zero);
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.6rem;
+      color: var(--fg-muted);
+      line-height: 1;
+      padding-top: 0.25rem;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    .step p, .step code {
+      color: var(--fg-dim);
+      font-size: 0.95rem;
+    }
+    code, pre {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 0.88rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    /* ---------- Footer ---------- */
+
+    footer {
+      padding: 4rem 0 3rem;
+      border-top: 1px solid var(--border);
+      color: var(--fg-muted);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    footer a { color: var(--fg-dim); }
+    footer a:hover { color: var(--fg); }
+
+    /* ---------- Reduced motion ---------- */
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="brand-dot"></span> better-mac</div>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://github.com/KaiSong06/better-mac">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">macOS 14+</div>
+    <h1>A smaller,<br>quieter <em>Mac.</em></h1>
+    <p class="lede">
+      Turn the notch into a live Dynamic Island. Replace the built-in volume HUD
+      with an iPhone-style pill. No Dock icon, no fuss. Just the tiny stuff
+      macOS should have shipped with.
+    </p>
+
+    <div class="cta-row">
+      <a href="https://github.com/KaiSong06/better-mac/releases/latest" class="btn primary" id="download-btn">
+        Download
+        <span class="meta" id="download-meta">for macOS</span>
+      </a>
+      <a href="https://github.com/KaiSong06/better-mac" class="btn ghost">
+        View on GitHub
+      </a>
+    </div>
+
+    <div class="island-stage" aria-hidden="true">
+      <div class="stage-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span>Desktop preview</span>
+      </div>
+      <div class="island">
+        <div class="thumb"></div>
+        <svg viewBox="0 0 360 20" preserveAspectRatio="none">
+          <path d="M0 10 C 40 2, 80 18, 120 10 S 200 2, 240 10 S 320 18, 360 10"/>
+        </svg>
+      </div>
+      <div class="island-caption">The island, while audio is playing.</div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Two small <em>things</em>, done right.</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-num">01</div>
+        <h3>Dynamic Island</h3>
+        <p>
+          Hover the top of your screen and the notch drops into a black panel with
+          artwork, transport controls, and a seek bar. While audio plays the
+          collapsed pill shows the album cover on the left and a live waveform on
+          the right — frozen when paused.
+        </p>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02</div>
+        <h3>iPhone-style volume HUD</h3>
+        <p>
+          Hardware volume keys now pop a tall pill on the right edge of the
+          screen — the native macOS indicator is suppressed cleanly, without
+          killing OSDUIHelper. The pill shows the active output device:
+          built-in speakers, AirPods, generic Bluetooth, USB, or AirPlay.
+        </p>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03</div>
+        <h3>Lives in the menu bar</h3>
+        <p>
+          No Dock icon. A small menu bar glyph lets you toggle either feature,
+          open Settings, or check for updates. Auto-updates via Sparkle land
+          silently in the background when a new version ships.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install in <em>under</em> a minute.</h2>
+    <div class="install-steps">
+      <div class="step">
+        <div>
+          <h3>Download the DMG</h3>
+          <p>Grab the latest release from GitHub. It's signed with a Developer ID and notarized by Apple, so Gatekeeper opens it without warnings.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div>
+          <h3>Drag better-mac into Applications</h3>
+          <p>Open the disk image and drop the app onto the <code>/Applications</code> shortcut.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div>
+          <h3>Launch and grant Accessibility</h3>
+          <p>On first launch, better-mac will ask for Accessibility permission. It needs this to intercept the hardware volume keys so it can replace the native HUD. No other keystrokes or clipboard data are read.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div>
+          <h3>Start the app, ignore it forever</h3>
+          <p>Toggle <em>Open at Login</em> from the menu bar and you're done. It runs invisibly from then on.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; width:100%;">
+    <div>© 2026 KaiSong06</div>
+    <div>
+      <a href="https://github.com/KaiSong06/better-mac">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/KaiSong06/better-mac/releases">Releases</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/KaiSong06/better-mac/blob/main/README.md">README</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Resolve the "latest" download URL dynamically and show the file size when
+  // the GitHub API is reachable. Falls back silently when rate-limited.
+  (async () => {
+    try {
+      const res = await fetch('https://api.github.com/repos/KaiSong06/better-mac/releases/latest', {
+        headers: { 'Accept': 'application/vnd.github+json' }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const asset = (data.assets || []).find(a => a.name.endsWith('.dmg'));
+      if (!asset) return;
+      const mb = (asset.size / 1024 / 1024).toFixed(1);
+      const btn = document.getElementById('download-btn');
+      const meta = document.getElementById('download-meta');
+      if (btn) btn.href = asset.browser_download_url;
+      if (meta) meta.textContent = `${data.tag_name} · ${mb} MB`;
+    } catch (_) { /* ignore */ }
+  })();
+</script>
+
+</body>
+</html>
