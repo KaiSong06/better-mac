@@ -26,6 +26,7 @@
 		82CF71CBC3DA6B15A7EA243A /* VolumeHUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D7F3040A7DE14A010BCBD /* VolumeHUDView.swift */; };
 		84D3196FC846692FDB5F1164 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E5958C27FDAC8F60459BC /* Permissions.swift */; };
 		8F91A2EA28CFD37A6C2BC2A3 /* NSScreen+Notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71107F5210904590C140F46 /* NSScreen+Notch.swift */; };
+		90B89387E95EC161C399E6C1 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59D3C352D1ED0EF5F392828 /* WaveformView.swift */; };
 		9B0F9E417CD5869B996209F4 /* AppSourceIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20373684628DA0514EEC6880 /* AppSourceIcon.swift */; };
 		BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56026F74A548478AB875D92C /* VolumeKeyInterceptor.swift */; };
 		C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CC6798F930024C11F00E8C /* VolumeHUDWindowController.swift */; };
@@ -75,6 +76,7 @@
 		CAE5445C638E34F14F609439 /* NowPlayingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingStore.swift; sourceTree = "<group>"; };
 		D02E5958C27FDAC8F60459BC /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		D60FBF1DDD1E072DCCE217CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E59D3C352D1ED0EF5F392828 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		E6C62AF0B5CA3163ED937B27 /* better-macTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "better-macTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB82C4C86B9D6A6B7C0828AF /* IslandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandView.swift; sourceTree = "<group>"; };
 		F2477955D7FE1520D317FCBA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				EB82C4C86B9D6A6B7C0828AF /* IslandView.swift */,
 				35B14C51E4707BFEA35AE067 /* IslandWindowController.swift */,
 				B71065B0518B06ACCC45F925 /* SeekBarView.swift */,
+				E59D3C352D1ED0EF5F392828 /* WaveformView.swift */,
 			);
 			path = Island;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				82CF71CBC3DA6B15A7EA243A /* VolumeHUDView.swift in Sources */,
 				C879D4D18FE2FA010682B998 /* VolumeHUDWindowController.swift in Sources */,
 				BE5A1F50F9D2552A63E6F8DE /* VolumeKeyInterceptor.swift in Sources */,
+				90B89387E95EC161C399E6C1 /* WaveformView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
