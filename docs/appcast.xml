@@ -95,5 +95,22 @@
         sparkle:edSignature="hrToCfinnySNavVGOdVGkiAwtbAXrJK9LS6ZW2bvvcPY3Oqcg5N3o4Tkd1/iSON1IWLnE0O3c9DQCy0rTM7MAg=="
       />
     </item>
+      <item>
+      <title>Version 0.1.5</title>
+      <pubDate>Thu, 16 Apr 2026 10:16:37 +0000</pubDate>
+      <sparkle:version>0.1.5</sparkle:version>
+      <sparkle:shortVersionString>0.1.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h3>better-mac 0.1.5</h3>
+        <p>See <a href="https://github.com/KaiSong06/better-mac/releases/tag/v0.1.5">release notes</a>.</p>
+      ]]></description>
+      <enclosure
+        url="https://github.com/KaiSong06/NotchFree/releases/download/v0.1.5/NotchFree-0.1.5.dmg"
+        length="1256779"
+        type="application/octet-stream"
+        sparkle:edSignature="27oh6jfrpvBcsHFT9+tE/IE+Rfq8X25slArZINpa1/wY4BC/dpW99/DbVE3mn0I0ciNBOTN/13ePBoI8TVgeDg=="
+      />
+    </item>
   </channel>
 </rss>
