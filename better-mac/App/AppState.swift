@@ -26,11 +26,14 @@ final class AppState: ObservableObject {
 
     init() {
         let defaults = UserDefaults.standard
-        // Register defaults (first-launch values)
+        // Register defaults (first-launch values). Open-at-login defaults
+        // to true so a fresh install of the notarized .dmg auto-registers
+        // with SMAppService and relaunches on every reboot. Users can still
+        // opt out from the menu bar toggle.
         defaults.register(defaults: [
             Self.islandEnabledKey: true,
             Self.volumeHUDEnabledKey: true,
-            Self.openAtLoginKey: false,
+            Self.openAtLoginKey: true,
             Self.showVolumePercentageKey: false
         ])
         self.islandEnabled = defaults.bool(forKey: Self.islandEnabledKey)
