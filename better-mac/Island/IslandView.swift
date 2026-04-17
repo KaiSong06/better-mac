@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 /// Visual states for the island content. The panel's frame is driven by the
@@ -25,6 +26,13 @@ struct IslandView: View {
     private let playingCorner: CGFloat = 10
     private let expandedCorner: CGFloat = 22
 
+    // Top margin reserved for the hardware notch cutout. Read off the active
+    // screen so content sits just below the camera island; fall back to 32pt
+    // on non-notched Macs to match the pill fallback height.
+    static var notchTopInset: CGFloat {
+        (NSScreen.main?.safeAreaInsets.top).flatMap { $0 > 0 ? $0 : nil } ?? 32
+    }
+
     var body: some View {
         ZStack {
             background
@@ -38,8 +46,11 @@ struct IslandView: View {
                     .transition(.opacity)
             case .expanded:
                 ExpandedIslandContent(store: store)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, 10)
+                    // Reserve the collapsed notch's height at the top so
+                    // nothing renders behind the hardware camera cutout.
+                    .padding(.top, Self.notchTopInset)
+                    .padding(.bottom, 12)
                     .transition(.opacity)
             }
         }
@@ -81,12 +92,15 @@ struct IslandView: View {
             )
             .fill(Color.black)
         case .expanded:
+            // Top corners are square: the panel width now matches the
+            // hardware notch exactly, so the top edge aligns with the notch
+            // sides and any top rounding would fight the camera cutout.
             UnevenRoundedRectangle(
                 cornerRadii: .init(
-                    topLeading: notchCorner,
+                    topLeading: 0,
                     bottomLeading: expandedCorner,
                     bottomTrailing: expandedCorner,
-                    topTrailing: notchCorner
+                    topTrailing: 0
                 ),
                 style: .continuous
             )
@@ -101,27 +115,23 @@ private struct ExpandedIslandContent: View {
     var body: some View {
         if store.hasTrack {
             VStack(spacing: 8) {
-                HStack(spacing: 12) {
-                    ArtworkView(image: store.artworkImage)
-                        .frame(width: 48, height: 48)
+                ArtworkView(image: store.artworkImage)
+                    .frame(width: 52, height: 52)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(store.title ?? "Unknown")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                        Text(store.artist ?? "")
-                            .font(.system(size: 11))
-                            .foregroundStyle(.white.opacity(0.65))
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                    }
-                    Spacer(minLength: 8)
-
-                    AppSourceIcon(bundleID: store.sourceBundleID)
-                        .frame(width: 16, height: 16)
+                VStack(spacing: 2) {
+                    Text(store.title ?? "Unknown")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Text(store.artist ?? "")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.65))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                 }
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
 
                 IslandControlsView(store: store)
 
@@ -135,14 +145,14 @@ private struct ExpandedIslandContent: View {
                 .frame(height: 14)
             }
         } else {
-            HStack {
+            VStack(spacing: 6) {
                 Image(systemName: "music.note")
                     .foregroundStyle(.white.opacity(0.7))
                 Text("Nothing Playing")
                     .foregroundStyle(.white.opacity(0.8))
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 11, weight: .medium))
             }
-            .padding(.vertical, 18)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

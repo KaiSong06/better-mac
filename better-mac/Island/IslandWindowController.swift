@@ -7,7 +7,9 @@ import Combine
 @MainActor
 final class IslandWindowController: NSObject {
     // Tuneable geometry
-    private let expandedSize = CGSize(width: 420, height: 140)
+    // Expansion is vertical-only: width and x match the hardware notch so
+    // the panel drops straight down from it. Only height is a free parameter.
+    private let expandedHeight: CGFloat = 180
     // Playing-state width only; the height matches the idle notch so the
     // pill reads as a horizontally-extended version of the same shape.
     private let playingWidth: CGFloat = 260
@@ -136,18 +138,12 @@ final class IslandWindowController: NSObject {
     }
 
     private func expandedRect(from collapsed: CGRect) -> CGRect {
-        let screen = NSScreen.main ?? NSScreen.screens.first!
-        let top = screen.frame.maxY
-        let width = expandedSize.width
-        let height = expandedSize.height
-        let x = screen.frame.midX - width / 2
-        // Flush to the top of the screen so the expanded panel extends the
-        // hardware notch downward with no gap. A gap here is both visually
-        // disconnected from the notch and a source of hover flicker: the
-        // cursor can land between the screen edge and the panel top, which
-        // NSTrackingArea reports as an exit.
-        let y = top - height
-        return CGRect(x: x, y: y, width: width, height: height)
+        // Vertical-only expansion: width and x inherit from the collapsed
+        // notch rect so the panel drops straight down from the hardware
+        // notch. Top stays flush with the screen edge (no gap — a gap both
+        // looks disconnected and is a hover-flicker source).
+        let y = collapsed.maxY - expandedHeight
+        return CGRect(x: collapsed.minX, y: y, width: collapsed.width, height: expandedHeight)
     }
 
     /// Pure rect math: position the playing pill flush to the top-center of
