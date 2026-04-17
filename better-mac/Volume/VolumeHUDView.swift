@@ -23,12 +23,17 @@ struct VolumeHUDView: View {
     // derives its panel size from these + the shadow margins below so the
     // drop shadow has room to render without clipping.
     static let pillSize = CGSize(width: 56, height: 200)
-    // Horizontal shadow reach = shadowRadius (20) on the non-flush side.
-    // The right side is intentionally flush to the screen edge.
+    // Horizontal shadow reach = shadowRadius (20) on the left. The right
+    // side gets its shadow room from `edgeInsetFromScreen` below instead,
+    // since the pill is inset from the screen edge rather than flush.
     static let shadowMarginH: CGFloat = 20
     // Vertical shadow reach = shadowRadius (20) + abs(shadow y offset 4) = 24
     // on both top and bottom.
     static let shadowMarginV: CGFloat = 24
+    // Gap between the pill's right edge and the screen's right edge. Also
+    // doubles as right-side shadow clearance — the shadow (radius 20)
+    // bleeds into this padding and then clips at the panel boundary.
+    static let edgeInsetFromScreen: CGFloat = 16
 
     // Single source of truth for the fill/mask animation so the two layers
     // cannot drift if the spring is retuned.
@@ -49,10 +54,12 @@ struct VolumeHUDView: View {
         let iconBottom = Self.pillSize.width * 0.22
 
         ZStack(alignment: .bottom) {
-            // Track — vibrancy material so the pill tints / blurs whatever
-            // sits behind the HUD panel (wallpaper, other windows).
+            // Track — lighter vibrancy material so the pill tints / blurs
+            // whatever sits behind the HUD panel. `.thinMaterial` reads
+            // lighter than `.regularMaterial` while still giving the
+            // frosted iOS look.
             Capsule(style: .continuous)
-                .fill(.regularMaterial)
+                .fill(.thinMaterial)
 
             // Fill — pure white, grows from the bottom. The outer clipShape
             // tapers the fill's bottom with the pill's curve. Spring tuned
@@ -70,10 +77,22 @@ struct VolumeHUDView: View {
             // fill animates. The mask Rectangle carries its own explicit
             // spring keyed on fillH so it stays locked to the fill even
             // without an ambient withAnimation transaction.
+            //
+            // `variableValue: iconVariableValue` makes the speaker glyph a
+            // single variable symbol (speaker.wave.3.fill) whose wave bars
+            // fill as volume rises — same bounding box at every level, so
+            // the icon doesn't visibly grow/shrink the way
+            // speaker.wave.N.fill variants did. Non-variable glyphs
+            // (airpods, headphones, airplayaudio, speaker.slash.fill)
+            // ignore the parameter. `.symbolRenderingMode(.monochrome)`
+            // pins every glyph to the single foreground color so the
+            // multi-element symbols (airpods, headphones) don't render
+            // with hierarchical tone variation.
             ZStack {
-                Image(systemName: iconName)
+                Image(systemName: iconName, variableValue: iconVariableValue)
                     .resizable()
                     .scaledToFit()
+                    .symbolRenderingMode(.monochrome)
                     .foregroundStyle(.white)
                     .frame(width: iconSize, height: iconSize)
                     .padding(.bottom, iconBottom)
@@ -82,9 +101,10 @@ struct VolumeHUDView: View {
                     // not to its own bounding box.
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
-                Image(systemName: iconName)
+                Image(systemName: iconName, variableValue: iconVariableValue)
                     .resizable()
                     .scaledToFit()
+                    .symbolRenderingMode(.monochrome)
                     .foregroundStyle(.black)
                     .frame(width: iconSize, height: iconSize)
                     .padding(.bottom, iconBottom)
@@ -101,18 +121,23 @@ struct VolumeHUDView: View {
         .clipShape(Capsule(style: .continuous))
         // Softer, larger shadow matches iOS elevation.
         .shadow(color: Color.black.opacity(0.12), radius: 20, x: 0, y: 4)
-        // Trailing alignment inside the larger host so the pill hugs the
-        // right edge of the screen while the shadow has room on the other
-        // three sides.
+        // Trailing alignment inside the host panel, with `edgeInsetFromScreen`
+        // of padding on the right. The panel's right edge sits at the
+        // screen edge; the pill sits `edgeInsetFromScreen` pt inside that.
+        // The padding also provides right-side shadow bleed room so the
+        // shadow fades smoothly into the gap rather than clipping hard.
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+        .padding(.trailing, Self.edgeInsetFromScreen)
         .accessibilityLabel(Text(accessibilityLabel))
     }
 
     // MARK: - Symbol resolution
 
-    /// SF Symbol name for the active output. For speaker-type outputs the
-    /// glyph is chosen from the `speaker.wave.N.fill` family so the number
-    /// of wave bars tracks the current level — matching iOS's volume HUD.
+    /// SF Symbol name for the active output. Speaker-type outputs always
+    /// use `speaker.wave.3.fill` — a variable symbol whose wave count is
+    /// driven by `iconVariableValue`, so the glyph's bounding box stays
+    /// constant regardless of volume level (the `speaker.wave.N.fill`
+    /// family we used before rendered at subtly different sizes per N).
     private var iconName: String {
         if muted { return "speaker.slash.fill" }
         switch kind {
@@ -122,15 +147,15 @@ struct VolumeHUDView: View {
         case .builtInSpeakers,
              .usb,
              .bluetooth,
-             .other:             return speakerSymbolForLevel
+             .other:             return "speaker.wave.3.fill"
         }
     }
 
-    private var speakerSymbolForLevel: String {
-        if clampedVolume <= 0.001 { return "speaker.fill" }
-        if clampedVolume <= 0.33  { return "speaker.wave.1.fill" }
-        if clampedVolume <= 0.66  { return "speaker.wave.2.fill" }
-        return "speaker.wave.3.fill"
+    /// Variable-symbol fill level, applied to `speaker.wave.3.fill` so the
+    /// wave bars fill as volume rises. Non-variable glyphs (airpods,
+    /// headphones, airplayaudio, speaker.slash.fill) ignore this value.
+    private var iconVariableValue: Double {
+        muted ? 0 : Double(clampedVolume)
     }
 
     private var accessibilityLabel: String {
