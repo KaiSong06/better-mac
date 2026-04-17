@@ -11,14 +11,16 @@ final class VolumeHUDWindowController {
     private let hostingView: NSHostingView<ContentWrapper>
     private let model: HUDModel
 
-    // Host panel = pill size + shadow margins so the drop shadow has room
-    // to render on the non-flush sides without clipping. The pill itself
-    // (VolumeHUDView.pillSize, 56×200) aligns to the panel's trailing edge,
-    // so its right edge sits flush with the screen edge (which is where
-    // the shadow is intentionally clipped away).
+    // Host panel size.
+    //  - Width: pill + left shadow margin + right-edge inset. The pill is
+    //    trailing-aligned with `edgeInsetFromScreen` of trailing padding
+    //    (see VolumeHUDView), so the right side of the panel holds the
+    //    screen-edge gap that the padding creates. That same gap also
+    //    gives the drop shadow on the right bleed room.
+    //  - Height: pill + vertical shadow margins on top and bottom.
     private var hudSize: CGSize {
         CGSize(
-            width: VolumeHUDView.pillSize.width + VolumeHUDView.shadowMarginH,
+            width: VolumeHUDView.pillSize.width + VolumeHUDView.shadowMarginH + VolumeHUDView.edgeInsetFromScreen,
             height: VolumeHUDView.pillSize.height + VolumeHUDView.shadowMarginV * 2
         )
     }
