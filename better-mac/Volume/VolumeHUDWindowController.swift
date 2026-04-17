@@ -11,10 +11,16 @@ final class VolumeHUDWindowController {
     private let hostingView: NSHostingView<ContentWrapper>
     private let model: HUDModel
 
-    private let hudSize = CGSize(width: 56, height: 200)
-    private let edgeInset: CGFloat = 16
+    // Panel dimensions carry a left/top/bottom margin over the pill so the
+    // shadow has room to render. The pill itself is 56×200 and aligns to
+    // the panel's trailing edge (see VolumeHUDView) so its right edge sits
+    // flush with `screen.visibleFrame.maxX`.
+    private let hudSize = CGSize(width: 72, height: 232)
+    // Pill sits flush against the right edge of the screen — no gutter.
+    private let edgeInset: CGFloat = 0
     private var dismissWork: DispatchWorkItem?
-    private let dismissAfter: TimeInterval = 1.8
+    // iOS auto-dismisses the volume HUD ~1.5 s after the last adjustment.
+    private let dismissAfter: TimeInterval = 1.5
 
     init(appState: AppState, audio: AudioOutputMonitor) {
         self.appState = appState
@@ -78,7 +84,7 @@ final class VolumeHUDWindowController {
         panel.invalidateShadow()
 
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.22
+            ctx.duration = 0.18
             ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
             panel.animator().alphaValue = 1
         }
@@ -93,7 +99,7 @@ final class VolumeHUDWindowController {
 
     private func fadeOut() {
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.32
+            ctx.duration = 0.25
             ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             panel.animator().alphaValue = 0
         } completionHandler: { [weak self] in
@@ -121,9 +127,9 @@ final class HUDModel: ObservableObject {
 
     func update(volume: Float, muted: Bool, kind: OutputKind, deviceName: String) {
         // Volume/mute drive the visible fill and icon, so animate those
-        // changes with a gentle spring. Kind/deviceName change rarely and
-        // aren't visually interpolated, but they ride along for simplicity.
-        withAnimation(.spring(response: 0.45, dampingFraction: 0.92)) {
+        // changes with a gentle spring. Tuned to iOS feel — responsive lead
+        // with a subtle settle, less damped than the prior 0.45/0.92.
+        withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
             self.volume = volume
             self.muted = muted
             self.kind = kind

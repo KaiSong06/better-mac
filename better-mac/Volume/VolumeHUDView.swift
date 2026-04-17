@@ -1,17 +1,28 @@
 import SwiftUI
 
-/// iPhone-style two-tone volume capsule with a device icon at the bottom.
+/// iPhone-style volume capsule.
 ///
-/// The pill (track + fill) is drawn in a single `Canvas` so there's no
-/// per-layer compositing — that's what was producing the soft halo around
-/// the bottom curve. The icon is overlaid as a normal SwiftUI `Image`, which
-/// is fine because the Canvas underneath is now a solid opaque shape.
+/// - **Track**: translucent vibrancy material (`.regularMaterial`) so the pill
+///   blurs whatever's behind the HUD window, matching iOS's frosted look.
+/// - **Fill**: white rectangle growing from the bottom, clipped to the
+///   capsule outline.
+/// - **Icon**: rendered twice at the same position — white over the track and
+///   black over the fill — so the glyph inverts color across the fill boundary
+///   in lock-step with the fill height.
+/// - **Layout**: the pill is a fixed 56×200 aligned to the trailing edge of
+///   the host container (which is 72×232 in production) so it sits flush with
+///   the screen's right edge while leaving shadow room on the other three sides.
 struct VolumeHUDView: View {
     let volume: Float          // 0.0 ... 1.0
     let muted: Bool
     let kind: OutputKind
     let deviceName: String
     let showPercentage: Bool
+
+    // Visible pill size. The hosting container (see VolumeHUDWindowController)
+    // is larger so the shadow has room to render on left/top/bottom.
+    private let pillWidth: CGFloat = 56
+    private let pillHeight: CGFloat = 200
 
     private var clampedVolume: CGFloat {
         CGFloat(max(0, min(1, volume)))
@@ -22,44 +33,66 @@ struct VolumeHUDView: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            let size = proxy.size
-            // Inner pill dimensions after the 8pt shadow padding.
-            let innerWidth = size.width - 16
-            let innerHeight = size.height - 16
-            let capRadius = innerWidth / 2
-            // Stop the fill at the top of the straight section so the clip
-            // never curls the top edge inward. The top cap stays track-coloured.
-            let fillH = max(0, (innerHeight - capRadius) * fillFraction)
-            ZStack(alignment: .bottom) {
-                // Track — a dedicated Capsule shape so the shadow traces the
-                // pill outline instead of the ZStack's bounding rectangle.
-                Capsule(style: .continuous)
-                    .fill(Color(white: 0.55).opacity(0.9))
-                    .shadow(color: Color.black.opacity(0.22), radius: 10, x: 0, y: 3)
+        let fillH = pillHeight * fillFraction
+        // iOS proportions: icon ~46% of pill width, ~22% bottom padding.
+        let iconSize = pillWidth * 0.46
+        let iconBottom = pillWidth * 0.22
 
-                // Fill + icon stack, clipped to the same capsule so the fill's
-                // bottom tapers with the pill's curve and nothing bleeds past
-                // the shadow'd track. This sub-stack has no shadow of its
-                // own — the track beneath carries it.
-                ZStack(alignment: .bottom) {
-                    Rectangle()
-                        .fill(Color.white)
-                        .frame(height: fillH)
+        ZStack(alignment: .bottom) {
+            // Track — vibrancy material so the pill tints / blurs whatever
+            // sits behind the HUD panel (wallpaper, other windows).
+            Capsule(style: .continuous)
+                .fill(.regularMaterial)
 
-                    Image(systemName: iconName)
-                        .resizable()
-                        .symbolRenderingMode(.monochrome)
-                        .scaledToFit()
-                        .foregroundStyle(.black)
-                        .frame(width: size.width * 0.42, height: size.width * 0.42)
-                        .padding(.bottom, size.width * 0.32)
-                }
-                .clipShape(Capsule(style: .continuous))
+            // Fill — pure white, grows from the bottom. The outer clipShape
+            // tapers the fill's bottom with the pill's curve. Spring tuned
+            // to iOS feel: responsive lead with a gentle settle.
+            Rectangle()
+                .fill(Color.white)
+                .frame(height: fillH)
+                .animation(
+                    .spring(response: 0.38, dampingFraction: 0.86),
+                    value: fillH
+                )
+
+            // Icon layer — differential inversion.
+            // White glyph is always drawn; the black glyph overlays only in
+            // the bottom `fillH` region, so the glyph reads as inverted
+            // wherever the white fill sits behind it. Both icons share the
+            // same position, so the inversion boundary is pixel-exact as the
+            // fill animates.
+            ZStack {
+                Image(systemName: iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(.white)
+                    .frame(width: iconSize, height: iconSize)
+                    .padding(.bottom, iconBottom)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+
+                Image(systemName: iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(.black)
+                    .frame(width: iconSize, height: iconSize)
+                    .padding(.bottom, iconBottom)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .mask(
+                        Rectangle()
+                            .frame(height: fillH)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    )
             }
-            .padding(8)
-            .accessibilityLabel(Text(accessibilityLabel))
         }
+        .frame(width: pillWidth, height: pillHeight)
+        .clipShape(Capsule(style: .continuous))
+        // Softer, larger shadow matches iOS elevation.
+        .shadow(color: Color.black.opacity(0.12), radius: 20, x: 0, y: 4)
+        // Trailing alignment inside the larger host so the pill hugs the
+        // right edge of the screen while the shadow has room on the other
+        // three sides.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+        .accessibilityLabel(Text(accessibilityLabel))
     }
 
     // MARK: - Symbol resolution
@@ -97,15 +130,22 @@ struct VolumeHUDView: View {
 #if DEBUG
 #Preview("70%") {
     VolumeHUDView(volume: 0.7, muted: false, kind: .airPods, deviceName: "AirPods", showPercentage: false)
-        .frame(width: 56, height: 220)
+        .frame(width: 72, height: 232)
         .padding()
-        .background(Color.black)
+        .background(Color.gray)
+}
+
+#Preview("30%") {
+    VolumeHUDView(volume: 0.3, muted: false, kind: .builtInSpeakers, deviceName: "Speakers", showPercentage: false)
+        .frame(width: 72, height: 232)
+        .padding()
+        .background(Color.gray)
 }
 
 #Preview("Muted") {
     VolumeHUDView(volume: 0.7, muted: true, kind: .builtInSpeakers, deviceName: "Speakers", showPercentage: false)
-        .frame(width: 56, height: 220)
+        .frame(width: 72, height: 232)
         .padding()
-        .background(Color.black)
+        .background(Color.gray)
 }
 #endif
