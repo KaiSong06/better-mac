@@ -48,9 +48,17 @@ struct IslandView: View {
                     .padding(.vertical, 4)
                     .transition(.opacity)
             case .peek:
-                // Pure hover hint: no inner content. The taller black pill
-                // is the signal.
-                EmptyView()
+                // Keep the playing content visible during peek so the album
+                // artwork doesn't disappear mid-hover — we're just growing
+                // the black pill, not swapping content.
+                if store.hasTrack {
+                    PlayingCollapsedContent(store: store)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .transition(.opacity)
+                } else {
+                    EmptyView()
+                }
             case .expanded:
                 ExpandedIslandContent(store: store)
                     .padding(.horizontal, 10)
@@ -61,6 +69,10 @@ struct IslandView: View {
                     .transition(.opacity)
             }
         }
+        // SwiftUI treats the hardware notch as a top safe-area inset on a
+        // top-anchored NSPanel; without this the pill renders ~notchHeight
+        // below the screen edge instead of flush with it.
+        .ignoresSafeArea()
         // Match the window controller's open-path frame animation so the
         // content crossfade lands in lock-step with the panel resize. Plain
         // opacity only (no scale) keeps the GPU path simple.
