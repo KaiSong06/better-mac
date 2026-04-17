@@ -10,6 +10,9 @@ final class IslandWindowController: NSObject {
     // Expansion is vertical-only: width and x match the hardware notch so
     // the panel drops straight down from it. Only height is a free parameter.
     private let expandedHeight: CGFloat = 180
+    // Additional height over the collapsed rect during the peek state.
+    // Small enough to read as a hover hint, big enough to not look like jitter.
+    private let peekHeightDelta: CGFloat = 12
     // Playing-state width only; the height matches the idle notch so the
     // pill reads as a horizontally-extended version of the same shape.
     private let playingWidth: CGFloat = 260
@@ -25,7 +28,7 @@ final class IslandWindowController: NSObject {
 
     /// Latest raw inputs. Both feed into `IslandStateResolver.resolve` via
     /// `updateResolvedState()`.
-    private var isHovering = false
+    private var hoverLevel: HoverLevel = .none
 
     init(store: NowPlayingStore, appState: AppState) {
         self.store = store
@@ -70,9 +73,9 @@ final class IslandWindowController: NSObject {
         super.init()
 
         // After super.init we can capture self for the hot zone callback.
-        self.hotZone = IslandHotZone { [weak self] newState in
+        self.hotZone = IslandHotZone { [weak self] newLevel in
             Task { @MainActor in
-                self?.setHovering(newState == .expanded)
+                self?.setHoverLevel(newLevel)
             }
         }
         hotZone.attach(to: hostingView)
@@ -113,7 +116,7 @@ final class IslandWindowController: NSObject {
 
     // MARK: - Frame math
 
-    /// Resolve the target panel frame for a given island state. All three
+    /// Resolve the target panel frame for a given island state. All four
     /// states center on the main screen's notch.
     private func frame(for state: IslandState) -> CGRect {
         let collapsed = collapsedRect()
@@ -127,6 +130,8 @@ final class IslandWindowController: NSObject {
             // seam when the island transitions between idle and playing.
             let size = CGSize(width: playingWidth, height: collapsed.height)
             return Self.playingRect(in: screen.frame, size: size)
+        case .peek:
+            return peekRect(from: collapsed)
         case .expanded:
             return expandedRect(from: collapsed)
         }
@@ -138,12 +143,27 @@ final class IslandWindowController: NSObject {
     }
 
     private func expandedRect(from collapsed: CGRect) -> CGRect {
-        // Vertical-only expansion: width and x inherit from the collapsed
-        // notch rect so the panel drops straight down from the hardware
-        // notch. Top stays flush with the screen edge (no gap — a gap both
-        // looks disconnected and is a hover-flicker source).
+        // Vertical-only expansion: width matches whatever the pre-expansion
+        // state was showing — the notch width when idle, the playing pill's
+        // width when a track is loaded. Centered on the same axis as the
+        // notch (screen midX). Top stays flush with the screen edge to avoid
+        // both a visual gap and the hover-flicker it used to cause.
+        let screen = NSScreen.main ?? NSScreen.screens.first!
+        let width = store.hasTrack ? playingWidth : collapsed.width
+        let x = screen.frame.midX - width / 2
         let y = collapsed.maxY - expandedHeight
-        return CGRect(x: collapsed.minX, y: y, width: collapsed.width, height: expandedHeight)
+        return CGRect(x: x, y: y, width: width, height: expandedHeight)
+    }
+
+    private func peekRect(from collapsed: CGRect) -> CGRect {
+        // Same width rule as expanded — vertical-only grow by `peekHeightDelta`
+        // over the collapsed height. Top stays flush with the screen edge.
+        let screen = NSScreen.main ?? NSScreen.screens.first!
+        let width = store.hasTrack ? playingWidth : collapsed.width
+        let x = screen.frame.midX - width / 2
+        let height = collapsed.height + peekHeightDelta
+        let y = collapsed.maxY - height
+        return CGRect(x: x, y: y, width: width, height: height)
     }
 
     /// Pure rect math: position the playing pill flush to the top-center of
@@ -156,11 +176,11 @@ final class IslandWindowController: NSObject {
 
     // MARK: - Input wiring
 
-    /// Called from the hot zone callback. Records the new hover state and
+    /// Called from the hot zone callback. Records the new hover level and
     /// triggers a full resolve.
-    private func setHovering(_ hovering: Bool) {
-        guard isHovering != hovering else { return }
-        isHovering = hovering
+    private func setHoverLevel(_ newLevel: HoverLevel) {
+        guard hoverLevel != newLevel else { return }
+        hoverLevel = newLevel
         updateResolvedState()
     }
 
@@ -173,7 +193,16 @@ final class IslandWindowController: NSObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 Task { @MainActor in
-                    self?.updateResolvedState()
+                    guard let self else { return }
+                    self.updateResolvedState()
+                    // While peeking or expanded the resolved state stays the
+                    // same across a hasTrack flip, so the container observer's
+                    // removeDuplicates suppresses the frame animation. Both
+                    // rect widths depend on hasTrack, so re-animate explicitly.
+                    let current = self.container.state
+                    if current == .expanded || current == .peek {
+                        self.animateFrame(for: current)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -184,7 +213,7 @@ final class IslandWindowController: NSObject {
     /// `observeContainerState()` further down.
     private func updateResolvedState() {
         container.state = IslandStateResolver.resolve(
-            hovering: isHovering,
+            hover: hoverLevel,
             hasTrack: store.hasTrack
         )
     }
@@ -202,14 +231,20 @@ final class IslandWindowController: NSObject {
 
     private func animateFrame(for state: IslandState) {
         let target = frame(for: state)
+        let isCollapsing = (state == .idle || state == .playing)
 
         NSAnimationContext.runAnimationGroup { ctx in
-            // Tight duration + a snappy custom cubic (fast lead-in, smooth
-            // settle) so the expand feels immediate instead of easing slowly
-            // out from rest. `display: false` skips the synchronous redraw
-            // each animation tick — the window compositor schedules its own.
-            ctx.duration = 0.18
-            ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.2, 0.9, 0.25, 1.0)
+            // Asymmetric timing: open is slower with a smooth ease-out tail
+            // so peek/expand feels gentle and intentional; close is snappier
+            // so dismissal feels responsive. `display: false` skips the
+            // synchronous redraw per tick — the compositor schedules its own.
+            if isCollapsing {
+                ctx.duration = 0.22
+                ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.4, 0.0, 0.2, 1.0)
+            } else {
+                ctx.duration = 0.30
+                ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.25, 1.0, 0.5, 1.0)
+            }
             ctx.allowsImplicitAnimation = true
             panel.animator().setFrame(target, display: false)
         } completionHandler: { [weak self] in

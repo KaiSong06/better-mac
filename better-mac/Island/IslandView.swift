@@ -7,10 +7,13 @@ import SwiftUI
 ///
 /// - `idle`: no active media — plain black notch.
 /// - `playing`: a track is loaded — black pill with artwork + waveform.
-/// - `expanded`: cursor is hovering — full media UI.
+/// - `peek`: cursor has just entered the hot zone — a subtle height hint
+///   shown before the dwell timer promotes to `.expanded`.
+/// - `expanded`: cursor has dwelled in the hot zone — full media UI.
 enum IslandState: Equatable {
     case idle
     case playing
+    case peek
     case expanded
 }
 
@@ -44,6 +47,10 @@ struct IslandView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .transition(.opacity)
+            case .peek:
+                // Pure hover hint: no inner content. The taller black pill
+                // is the signal.
+                EmptyView()
             case .expanded:
                 ExpandedIslandContent(store: store)
                     .padding(.horizontal, 10)
@@ -54,11 +61,10 @@ struct IslandView: View {
                     .transition(.opacity)
             }
         }
-        // Match the window controller's frame animation so the content
-        // crossfade lands in lock-step with the panel resize. Plain opacity
-        // only (no scale) keeps the GPU path simple — the scaling transition
-        // was the main source of the perceived lag on expand.
-        .animation(.easeOut(duration: 0.18), value: state)
+        // Match the window controller's open-path frame animation so the
+        // content crossfade lands in lock-step with the panel resize. Plain
+        // opacity only (no scale) keeps the GPU path simple.
+        .animation(.easeOut(duration: 0.30), value: state)
     }
 
     @ViewBuilder
@@ -91,16 +97,34 @@ struct IslandView: View {
                 style: .continuous
             )
             .fill(Color.black)
-        case .expanded:
-            // Top corners are square: the panel width now matches the
-            // hardware notch exactly, so the top edge aligns with the notch
-            // sides and any top rounding would fight the camera cutout.
+        case .peek:
+            // Bottom-rounded like idle/playing. Top corners round to
+            // `notchCorner` only when the peek is wider than the hardware
+            // notch (hasTrack → playingWidth) so the corners that poke out
+            // into the menu bar area look intentional. At notch width the
+            // corners sit under the camera cutout and the radius is invisible.
             UnevenRoundedRectangle(
                 cornerRadii: .init(
-                    topLeading: 0,
+                    topLeading: store.hasTrack ? notchCorner : 0,
+                    bottomLeading: playingCorner,
+                    bottomTrailing: playingCorner,
+                    topTrailing: store.hasTrack ? notchCorner : 0
+                ),
+                style: .continuous
+            )
+            .fill(Color.black)
+        case .expanded:
+            // Top corners match the notch-corner radius: when expanded from
+            // the playing pill the panel extends past the notch horizontally,
+            // so the top edges are visible in the menu bar area and need
+            // rounding. When expanded from idle (notch width) the corners
+            // fall under the camera cutout and the radius is invisible.
+            UnevenRoundedRectangle(
+                cornerRadii: .init(
+                    topLeading: notchCorner,
                     bottomLeading: expandedCorner,
                     bottomTrailing: expandedCorner,
-                    topTrailing: 0
+                    topTrailing: notchCorner
                 ),
                 style: .continuous
             )

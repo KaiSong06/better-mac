@@ -1,35 +1,40 @@
 import AppKit
 
-/// Tracks mouse position and drives expand/collapse of the island.
+/// Tracks mouse position and drives peek/expand/collapse of the island.
 ///
 /// - Installs an `NSTrackingArea` on the panel's content view for precise
-///   enter/exit while the cursor is inside the expanded panel bounds.
-/// - Falls back on a global mouse monitor while expanded so we can detect the
-///   cursor crossing the outer edge of the expanded region (tracking areas
-///   don't report events outside the panel frame).
+///   enter/exit while the cursor is inside the panel bounds.
+/// - Falls back on a global mouse monitor while hovering so we can detect the
+///   cursor crossing the outer edge of the hot zone (tracking areas don't
+///   report events outside the panel frame).
+/// - On entry, sets `level = .peek` immediately and starts a dwell timer.
+///   If the cursor stays in the hot zone for `peekDwell` seconds, the level
+///   promotes to `.full`. Otherwise a debounced collapse returns to `.none`.
 @MainActor
 final class IslandHotZone: NSObject {
-    enum State: Equatable { case collapsed, expanded }
-
-    private(set) var state: State = .collapsed {
+    private(set) var level: HoverLevel = .none {
         didSet {
-            if oldValue != state { onChange(state) }
+            if oldValue != level { onChange(level) }
         }
     }
 
     private weak var contentView: NSView?
     private var trackingArea: NSTrackingArea?
     private var globalMonitor: Any?
-    private let onChange: (State) -> Void
+    private let onChange: (HoverLevel) -> Void
 
     /// Short hysteresis on collapse. Long enough to absorb enter/exit jitter
-    /// at the tracking-area boundary (the source of the flicker you'd see
-    /// with a zero-grace collapse), short enough to feel instant to a human.
-    /// A fresh `enter()` cancels the pending collapse.
+    /// at the tracking-area boundary, short enough to feel instant.
     private let collapseDebounce: TimeInterval = 0.06
     private var collapseWork: DispatchWorkItem?
 
-    init(onChange: @escaping (State) -> Void) {
+    /// Dwell required before peek promotes to full expansion. Injectable so
+    /// tests can shorten it.
+    private let peekDwell: TimeInterval
+    private var peekDwellWork: DispatchWorkItem?
+
+    init(peekDwell: TimeInterval = 0.75, onChange: @escaping (HoverLevel) -> Void) {
+        self.peekDwell = peekDwell
         self.onChange = onChange
         super.init()
     }
@@ -64,8 +69,6 @@ final class IslandHotZone: NSObject {
     }
 
     // MARK: - Callbacks from the tracking area
-    // NSTrackingArea sends mouseEntered:/mouseExited: to its owner using the
-    // standard NSResponder selectors even when the owner is a plain NSObject.
 
     @objc func mouseEntered(_ event: NSEvent) {
         enter()
@@ -78,36 +81,60 @@ final class IslandHotZone: NSObject {
     // MARK: - Public API (also used by hosting NSView's events)
 
     func enter() {
-        // A pending collapse is cancelled by any fresh enter — this is how
-        // the anti-flicker hysteresis collapses back to stable on jitter.
+        // Any fresh entry cancels a pending collapse — this is how the
+        // hysteresis absorbs jitter at the tracking-area boundary.
         collapseWork?.cancel()
         collapseWork = nil
-        if state != .expanded {
-            state = .expanded
+
+        // Only transition on `.none → .peek`. Repeat `enter()` calls while
+        // already peeking or fully expanded must NOT reset the dwell timer —
+        // mouseMoved jitter inside the hot zone would otherwise keep the
+        // panel stuck at peek forever.
+        switch level {
+        case .none:
+            level = .peek
             startGlobalMonitor()
+            schedulePeekDwell()
+        case .peek, .full:
+            break
         }
     }
 
     func exit() {
-        // If the cursor is still inside the logical hot zone (the expanded
-        // panel OR the physical notch), this isn't a real exit — it's just
-        // the cursor sitting at the top of the notch while the expanded
-        // panel has a small gap below the screen edge. Ignore it.
+        // Still inside the logical hot zone (union of panel frame and the
+        // physical notch)? Not a real exit.
         if cursorInsideHotZone() { return }
+
+        // Kill the pending dwell too — otherwise a fired-after-exit dwell
+        // could promote us back to full while the user's already gone.
+        peekDwellWork?.cancel()
+        peekDwellWork = nil
 
         collapseWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
-            // Re-check at fire time too, in case the cursor moved back into
-            // the notch during the debounce window.
             if self.cursorInsideHotZone() { return }
-            if self.state != .collapsed {
-                self.state = .collapsed
+            if self.level != .none {
+                self.level = .none
                 self.stopGlobalMonitor()
             }
         }
         collapseWork = work
         DispatchQueue.main.asyncAfter(deadline: .now() + collapseDebounce, execute: work)
+    }
+
+    private func schedulePeekDwell() {
+        peekDwellWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            // Re-check at fire time: the cursor may have left during the
+            // dwell window (in which case exit() already scheduled collapse
+            // and we should not contradict it).
+            guard self.cursorInsideHotZone() else { return }
+            if self.level == .peek { self.level = .full }
+        }
+        peekDwellWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + peekDwell, execute: work)
     }
 
     /// True iff the cursor is inside the union of the current panel frame
@@ -122,7 +149,7 @@ final class IslandHotZone: NSObject {
         return combined.contains(p)
     }
 
-    // MARK: - Global monitor for leaving the expanded bounds
+    // MARK: - Global monitor for leaving the hot zone
 
     private func startGlobalMonitor() {
         guard globalMonitor == nil else { return }
