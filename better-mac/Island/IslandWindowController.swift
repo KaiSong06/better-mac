@@ -239,7 +239,7 @@ final class IslandWindowController: NSObject {
             // so dismissal feels responsive. `display: false` skips the
             // synchronous redraw per tick — the compositor schedules its own.
             if isCollapsing {
-                ctx.duration = 0.22
+                ctx.duration = 0.15
                 ctx.timingFunction = CAMediaTimingFunction(controlPoints: 0.4, 0.0, 0.2, 1.0)
             } else {
                 ctx.duration = 0.30
