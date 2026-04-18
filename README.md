@@ -7,7 +7,7 @@ A lightweight macOS utility that brings two iPhone-style niceties to your Mac:
 
 Runs as a menu bar agent with no Dock icon. Auto-updates via Sparkle.
 
-**Website:** https://KaiSong06.github.io/NotchFree
+**Website:** https://notchfree.kaisong.xyz
 **Download:** https://github.com/KaiSong06/NotchFree/releases/latest
 
 ---
